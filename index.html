@@ -1,0 +1,1827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>KETSHOP — Welcome to the Town</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&family=Gaegu:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --grass: #7cb87c;
+  --grass-light: #8ec88e;
+  --grass-dark: #5fa05f;
+  --grass-patch: #6ab06a;
+  --path: #d4c49a;
+  --path-edge: #c4b088;
+  --path-stone: #bfa878;
+  --water: #7cc4e0;
+  --water-light: #a0daf0;
+  --bridge-wood: #a08050;
+  --roof-brown: #a0644a;
+  --roof-dark: #8a5038;
+  --roof-red: #c06040;
+  --roof-blue: #6090b0;
+  --wall-cream: #f0e8d4;
+  --wall-warm: #e8dcc0;
+  --wall-pink: #f0d8d0;
+  --wall-blue: #d0dce8;
+  --awning: #8B4513;
+  --awning-text: #FFE4B5;
+  --window: #a8d8ea;
+  --window-glow: rgba(255,200,80,0.55);
+  --door: #8a6a4a;
+  --fence: #c0a070;
+  --tree-top: #4a9a4a;
+  --tree-light: #60b060;
+  --tree-shadow: #3a8a3a;
+  --bush: #5aaa5a;
+  --flower-r: #f08080;
+  --flower-p: #d080c0;
+  --flower-y: #f0d060;
+  --flower-w: #f0f0e8;
+  --ket-fur: #4A4A4A;
+  --ket-eyes: #A8E06C;
+  --tuni-body: #f0e0e8;
+  --shushu-body: #f0dca0;
+  --dawg-fur: #8b7b6b;
+  --charcoal: #4A4A4A;
+  --white: #FEFCF8;
+  --glow: rgba(255,220,120,0.4);
+  --font-display: 'Gaegu', cursive;
+  --font-body: 'Comfortaa', sans-serif;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#5a9a5a;font-family:var(--font-body);
+  cursor:url("knit-cursor.png") 3 2,auto}
+*,*::before,*::after,a,button,.hotspot,[data-hover]{cursor:inherit}
+
+/* ════════════ SPACE INTRO OVERLAY ════════════ */
+.intro{position:fixed;inset:0;z-index:9000;pointer-events:all;overflow:hidden}
+.intro.done{pointer-events:none}
+
+/* Deep space background */
+.intro-space{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse at 30% 20%, #0d1b2a 0%, #070d15 50%, #020408 100%);
+  transition:opacity 1s ease;
+}
+.intro.done .intro-space{opacity:0;transition-delay:1.4s}
+
+/* Static starfield (CSS dots) */
+.intro-stars{position:absolute;inset:0}
+.intro-star{
+  position:absolute;border-radius:50%;background:#fff;
+  animation:starTwinkle var(--dur, 3s) ease-in-out infinite alternate;
+  animation-delay:var(--delay, 0s);
+}
+@keyframes starTwinkle{0%{opacity:var(--lo,.2)}100%{opacity:var(--hi,.8)}}
+
+/* Distant nebula glow */
+.intro-nebula{
+  position:absolute;border-radius:50%;filter:blur(60px);opacity:.15;
+  animation:nebulaFloat 12s ease-in-out infinite alternate;
+}
+.nebula-1{width:400px;height:300px;top:5%;right:10%;background:radial-gradient(circle,#6030a0,transparent)}
+.nebula-2{width:350px;height:250px;bottom:10%;left:5%;background:radial-gradient(circle,#204080,transparent)}
+.nebula-3{width:250px;height:200px;top:40%;left:30%;background:radial-gradient(circle,#206040,transparent);opacity:.1}
+@keyframes nebulaFloat{from{transform:translate(0,0) scale(1)}to{transform:translate(15px,-10px) scale(1.05)}}
+
+/* Shooting stars */
+.intro-shooting{
+  position:absolute;width:80px;height:1px;
+  background:linear-gradient(90deg,rgba(255,255,255,.8),transparent);
+  opacity:0;transform:rotate(-35deg);
+}
+.shoot-1{top:15%;left:60%;animation:shootStar 4s ease-in 2s infinite}
+.shoot-2{top:55%;left:20%;animation:shootStar 5s ease-in 4.5s infinite}
+@keyframes shootStar{
+  0%{opacity:0;transform:rotate(-35deg) translateX(0)}
+  5%{opacity:1}
+  15%{opacity:0;transform:rotate(-35deg) translateX(-250px)}
+  100%{opacity:0}
+}
+
+/* ─── Planet ─── */
+.intro-planet-wrap{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  z-index:10;
+}
+.intro-planet{
+  width:clamp(90px,12vw,150px);height:clamp(90px,12vw,150px);
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#6ab8e0,#3a8cc0 35%,#2a6a9a 55%,#1a3a5a 100%);
+  box-shadow:
+    inset -20px -15px 40px rgba(0,0,0,.4),
+    inset 10px 10px 30px rgba(255,255,255,.08),
+    0 0 80px rgba(80,160,220,.2),
+    0 0 160px rgba(80,160,220,.08);
+  position:relative;
+  transition:transform 1.2s cubic-bezier(0.22,1,0.36,1),box-shadow .8s ease;
+  animation:planetFloat 6s ease-in-out infinite;
+}
+.intro-planet:hover{
+  transform:scale(1.05);
+  box-shadow:
+    inset -20px -15px 40px rgba(0,0,0,.4),
+    inset 10px 10px 30px rgba(255,255,255,.08),
+    0 0 100px rgba(80,160,220,.35),
+    0 0 200px rgba(80,160,220,.15);
+}
+@keyframes planetFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-8px)}
+}
+
+/* Planet surface details (green continents on blue) */
+.planet-land{position:absolute;opacity:.5}
+.planet-land-1{width:38%;height:28%;top:18%;left:12%;background:rgba(90,160,90,.7);border-radius:40% 60% 50% 50%}
+.planet-land-2{width:25%;height:22%;top:48%;left:52%;background:rgba(80,150,80,.6);border-radius:50% 40% 55% 45%}
+.planet-land-3{width:18%;height:14%;top:32%;left:42%;background:rgba(100,170,90,.5);border-radius:45% 55% 40% 60%}
+.planet-land-4{width:15%;height:20%;top:60%;left:18%;background:rgba(85,155,85,.45);border-radius:50% 45% 55% 50%}
+
+/* Cloud wisps on planet */
+.planet-cloud{
+  position:absolute;height:8%;border-radius:100px;
+  background:rgba(255,255,255,.12);
+}
+.planet-cloud-1{width:45%;top:28%;left:10%;animation:pCloudDrift 20s linear infinite}
+.planet-cloud-2{width:35%;top:55%;left:30%;animation:pCloudDrift 25s linear infinite reverse}
+.planet-cloud-3{width:25%;top:40%;left:50%;animation:pCloudDrift 18s linear infinite;animation-delay:-8s}
+@keyframes pCloudDrift{
+  from{transform:translateX(-20px);opacity:.12}
+  50%{opacity:.18}
+  to{transform:translateX(20px);opacity:.12}
+}
+
+/* Atmosphere ring */
+.planet-atmo{
+  position:absolute;inset:-6px;border-radius:50%;
+  border:1.5px solid rgba(120,180,240,.2);
+  box-shadow:0 0 20px rgba(120,180,240,.08);
+}
+
+/* Planet glow pulse ring */
+.planet-pulse{
+  position:absolute;inset:-15px;border-radius:50%;
+  border:1px solid rgba(120,180,240,.12);
+  animation:planetPulse 3s ease-out infinite;
+}
+@keyframes planetPulse{0%{transform:scale(1);opacity:.3}100%{transform:scale(1.25);opacity:0}}
+
+/* ─── Shu Shu floating in space ─── */
+.space-shushu{
+  position:absolute;z-index:8;
+  top:0;left:0;
+  will-change:transform;
+  pointer-events:none;
+}
+.space-shushu svg{
+  width:clamp(50px,7vw,80px);height:auto;
+  filter:drop-shadow(0 0 15px rgba(245,208,64,.3));
+}
+
+/* Small debris / space dust floating */
+.space-dust{
+  position:absolute;border-radius:50%;background:rgba(200,180,140,.4);
+  animation:dustFloat var(--fdur, 12s) linear infinite;
+}
+@keyframes dustFloat{
+  from{transform:translate(0,0) rotate(0deg)}
+  to{transform:translate(var(--dx, 40px),var(--dy, -60px)) rotate(360deg)}
+}
+
+/* ─── Enter prompt below planet ─── */
+.intro-enter{
+  position:absolute;top:calc(50% + clamp(75px,10vw,120px));left:50%;
+  transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  z-index:12;
+  opacity:0;animation:enterFadeIn 1s ease-out 1.5s forwards;
+}
+.intro-enter-text{
+  font-family:var(--font-display);
+  font-size:clamp(0.65rem,1.2vw,0.9rem);
+  font-weight:700;
+  color:rgba(255,255,255,.4);
+  letter-spacing:clamp(2px,0.6vw,5px);
+  text-transform:uppercase;
+  transition:all .3s;
+}
+.intro-enter-text:hover{color:rgba(255,255,255,.75);text-shadow:0 0 20px rgba(255,255,255,.25)}
+.intro-enter-arrow{
+  width:20px;height:20px;opacity:.4;
+  animation:arrowBounce 2s ease-in-out infinite;
+}
+.intro-enter-arrow svg{stroke:rgba(255,255,255,.35);stroke-width:2;fill:none}
+@keyframes enterFadeIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+@keyframes arrowBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+
+/* ─── Logo in space (top area, glowing image) ─── */
+.intro-space-logo{
+  position:absolute;top:calc(50% - clamp(150px,18vw,240px));left:50%;
+  transform:translateX(-50%);z-index:10;
+  opacity:0;animation:spaceLogoIn 1s ease-out .6s forwards;
+}
+.intro-space-logo img{
+  height:clamp(80px,14vw,150px);
+  width:auto;
+  /* Keep the baby-blue visible, add ethereal space glow */
+  filter:brightness(1.3) contrast(1.1) drop-shadow(0 0 12px rgba(160,200,255,.5)) drop-shadow(0 0 35px rgba(120,160,255,.25));
+  transition:filter .4s ease;
+}
+.intro-space-logo:hover img{
+  filter:brightness(1.6) contrast(1.1) drop-shadow(0 0 20px rgba(180,210,255,.65)) drop-shadow(0 0 50px rgba(140,180,255,.35));
+}
+@keyframes spaceLogoIn{from{opacity:0;transform:translateX(-50%) translateY(-15px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+/* ─── Warp speed canvas (star streaks) ─── */
+.warp-canvas{
+  position:absolute;inset:0;z-index:15;
+  pointer-events:none;opacity:0;
+  transition:opacity .3s ease;
+}
+.intro.zooming .warp-canvas{opacity:1}
+
+/* ─── Zoom animation phases ─── */
+
+/* Phase 1: Everything except planet fades, planet stops floating */
+.intro.zooming .intro-enter{opacity:0 !important;transition:opacity .3s ease}
+.intro.zooming .intro-space-logo{opacity:0 !important;transition:opacity .4s ease}
+.intro.zooming .intro-shooting{opacity:0 !important;transition:opacity .2s ease}
+.intro.zooming .intro-nebula{opacity:0 !important;transition:opacity .6s ease}
+.intro.zooming .space-dust{opacity:0 !important;transition:opacity .3s ease}
+.intro.zooming .planet-pulse{display:none}
+
+/* Stars get handled by JS (they streak), hide the CSS ones */
+.intro.zooming .intro-star{animation:none !important}
+
+/* Planet: stop floating, JS handles the zoom transform */
+.intro.zooming .intro-planet{animation:none !important}
+.intro.zooming .intro-planet-wrap{transition:none}
+
+/* Shu Shu: JS handles fade via spaceFade; hide with !important to prevent flash */
+.intro.zooming .space-shushu{
+  opacity:0 !important;
+  pointer-events:none;
+}
+
+/* ─── Atmosphere entry overlay (blue glow) ─── */
+.intro-atmosphere{
+  position:absolute;inset:0;z-index:16;
+  pointer-events:none;opacity:0;
+  background:radial-gradient(circle at 50% 50%,
+    rgba(60,100,200,.0) 0%,
+    rgba(60,100,200,.0) 20%,
+    rgba(40,80,180,.2) 40%,
+    rgba(20,50,140,.45) 65%,
+    rgba(10,20,60,.8) 100%
+  );
+  transition:opacity .8s ease;
+}
+
+/* Zoom shooting stars (appear during atmosphere entry) */
+.zoom-meteors{
+  position:absolute;inset:0;z-index:17;
+  pointer-events:none;opacity:0;
+  overflow:hidden;
+}
+.zoom-meteor{
+  position:absolute;
+  width:var(--len, 60px);height:2px;
+  background:linear-gradient(90deg,rgba(180,210,255,.9),rgba(120,160,255,.4),transparent);
+  border-radius:2px;
+  opacity:0;
+  transform:rotate(var(--angle, -35deg));
+  animation:zoomShoot var(--dur, 1s) ease-in var(--delay, 0s) infinite;
+  box-shadow:0 0 6px rgba(140,180,255,.4);
+}
+@keyframes zoomShoot{
+  0%{opacity:0;transform:rotate(var(--angle, -35deg)) translateX(0)}
+  8%{opacity:1}
+  30%{opacity:0;transform:rotate(var(--angle, -35deg)) translateX(calc(var(--travel, -300px)))}
+  100%{opacity:0}
+}
+
+/* ─── Space Swimmer ("You" NPC) ─── */
+.space-swimmer{
+  position:absolute;z-index:16;
+  pointer-events:none;opacity:0;
+  left:50%;top:82%;
+  transform:translate(-50%,-50%);
+  display:flex;flex-direction:column;align-items:center;
+}
+.swimmer-label{
+  font-family:var(--font-display);
+  font-weight:700;font-size:14px;
+  color:#fff;text-align:center;
+  margin-bottom:6px;letter-spacing:1px;
+  text-shadow:0 0 10px rgba(168,200,255,0.7),0 0 20px rgba(168,200,255,0.3);
+  animation:label-bob 2.2s ease-in-out infinite;
+}
+.swimmer-label::after{
+  content:'';display:block;margin:2px auto 0;
+  width:0;height:0;
+  border-left:4px solid transparent;border-right:4px solid transparent;
+  border-top:5px solid rgba(255,255,255,0.7);
+}
+@keyframes label-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+
+.swimmer-char{width:50px;height:70px}
+
+/* SVG limb swimming animations */
+.sw-arm-l{transform-box:view-box;transform-origin:10px 32px;animation:sw-pad-l 0.9s ease-in-out infinite}
+.sw-arm-r{transform-box:view-box;transform-origin:30px 32px;animation:sw-pad-r 0.9s ease-in-out infinite}
+.sw-leg-l{transform-box:view-box;transform-origin:16px 48px;animation:sw-kick-l 0.65s ease-in-out infinite}
+.sw-leg-r{transform-box:view-box;transform-origin:24px 48px;animation:sw-kick-r 0.65s ease-in-out infinite}
+
+@keyframes sw-pad-l{0%,100%{transform:rotate(-30deg)}50%{transform:rotate(25deg)}}
+@keyframes sw-pad-r{0%,100%{transform:rotate(30deg)}50%{transform:rotate(-25deg)}}
+@keyframes sw-kick-l{0%,100%{transform:rotate(18deg)}50%{transform:rotate(-12deg)}}
+@keyframes sw-kick-r{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(18deg)}}
+
+/* Glow trail behind swimmer */
+.swimmer-glow{
+  position:absolute;bottom:-12px;left:50%;
+  transform:translateX(-50%);
+  width:16px;height:28px;
+  background:radial-gradient(ellipse,rgba(168,200,255,0.35) 0%,transparent 70%);
+  animation:glow-pulse 1.4s ease-in-out infinite;
+  filter:blur(3px);
+}
+@keyframes glow-pulse{0%,100%{opacity:0.6;transform:translateX(-50%) scaleY(1)}50%{opacity:1;transform:translateX(-50%) scaleY(1.3)}}
+
+/* ─── Final white flash (brief, for clean transition) ─── */
+.intro-flash{
+  position:absolute;inset:0;z-index:19;
+  pointer-events:none;opacity:0;
+  background:#FEFCF8;
+}
+
+/* Final fade-out of entire intro */
+.intro.done{
+  opacity:0;
+  transition:opacity .8s cubic-bezier(0.4,0,0.2,1);
+  transition-delay:.1s;
+}
+
+/* ════════════ HEADER (hidden initially) ════════════ */
+.header{opacity:0;transform:translateY(-20px);transition:opacity .8s ease .5s,transform .8s ease .5s}
+.header.show{opacity:1;transform:translateY(0)}
+
+/* Hotspots hidden initially */
+.hotspots-inner{opacity:0;transform:scale(.97);transition:opacity 1s ease .8s,transform 1s ease .8s}
+.hotspots-inner.show{opacity:1;transform:scale(1)}
+
+/* Tagline hidden initially */
+.tagline{opacity:0;transition:opacity .8s ease 1.2s}
+.tagline.show{opacity:.6}
+
+/* ════════════ HEADER (3-col: hamburger | logo) ════════════ */
+.header{position:fixed;top:0;left:0;right:0;z-index:100;
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+  padding:8px clamp(16px,4vw,40px);pointer-events:none}
+.header>*{pointer-events:auto}
+.hdr-left{display:flex;align-items:center}
+.hdr-center{display:flex;justify-content:center}
+.hdr-right{display:flex;justify-content:flex-end;gap:6px}
+.hdr-logo{display:flex;align-items:center;text-decoration:none;
+  filter:drop-shadow(0 2px 8px rgba(0,0,0,0.2));
+  transition:all .35s cubic-bezier(0.22,1,0.36,1);
+}
+.hdr-logo:hover{
+  filter:drop-shadow(0 2px 12px rgba(0,0,0,0.15)) drop-shadow(0 0 18px rgba(168,224,108,0.25));
+  transform:translateY(-1px) scale(1.04);
+}
+.hdr-logo img{height:clamp(70px,10vw,100px);width:auto}
+
+/* ════════════ HAMBURGER — Claw Scratch Icon ════════════ */
+.hamburger{
+  width:42px;height:42px;border-radius:50%;border:none;
+  background:rgba(255,255,255,0.5);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  display:flex;align-items:center;justify-content:center;
+  padding:0;
+  transition:all .3s cubic-bezier(0.22,1,0.36,1);
+}
+.hamburger:hover{background:rgba(255,255,255,0.85);transform:scale(1.1)}
+.hamburger-icon{width:24px;height:20px}
+
+/* Claw scratch lines — organic hand-scratched feel */
+.claw{
+  transition:all .4s cubic-bezier(0.22,1,0.36,1);
+  transform-origin:14px 11px;
+}
+/* Hover: scratches spread apart slightly + micro-wobble */
+.hamburger:not(.open):hover .claw-1{transform:translateY(-1.5px) rotate(-2deg)}
+.hamburger:not(.open):hover .claw-2{transform:scaleX(1.04)}
+.hamburger:not(.open):hover .claw-3{transform:translateY(1.5px) rotate(2deg)}
+
+/* Open state: X formation */
+.hamburger.open .claw-1{transform:translateY(6.5px) rotate(45deg)}
+.hamburger.open .claw-2{opacity:0;transform:scaleX(0)}
+.hamburger.open .claw-3{transform:translateY(-6.5px) rotate(-45deg)}
+
+/* ════════════ SLIDE-OUT MENU — Plushie Panel ════════════ */
+.menu-overlay{
+  position:fixed;inset:0;z-index:200;
+  pointer-events:none;opacity:0;transition:opacity .4s ease;
+}
+.menu-overlay.open{pointer-events:all;opacity:1}
+
+/* Backdrop — soft warm blur */
+.menu-backdrop{
+  position:absolute;inset:0;
+  background:rgba(74,74,74,0.12);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  opacity:0;transition:opacity .5s ease;
+}
+.menu-overlay.open .menu-backdrop{opacity:1}
+
+/* Panel — rounded plushie with stitching border */
+.menu-panel{
+  position:absolute;top:18px;left:16px;bottom:18px;
+  width:clamp(250px,42vw,310px);
+  background:#FDF8F0;
+  border-radius:26px;
+  border:2.5px dashed rgba(180,160,140,0.3);
+  box-shadow:
+    0 12px 48px rgba(74,74,74,0.1),
+    0 2px 8px rgba(74,74,74,0.04),
+    inset 0 1px 0 rgba(255,255,255,0.8);
+  padding:52px clamp(22px,3vw,32px) 28px;
+  transform:translateX(calc(-100% - 32px)) scale(0.96);
+  transition:transform .55s cubic-bezier(0.16,1,0.3,1), opacity .4s ease;
+  opacity:0;
+  display:flex;flex-direction:column;
+  overflow:visible;
+}
+.menu-overlay.open .menu-panel{transform:translateX(0) scale(1);opacity:1}
+
+/* Subtle dot-fabric pattern */
+.menu-panel::before{
+  content:'';position:absolute;inset:0;
+  background-image:radial-gradient(circle,rgba(180,160,140,0.07) 1px,transparent 1px);
+  background-size:14px 14px;
+  border-radius:26px;pointer-events:none;
+}
+
+/* Menu nav */
+.menu-nav{display:flex;flex-direction:column;gap:4px;flex:1;padding-top:8px}
+
+/* Links — cozy pills with character-colored dot bullets */
+.menu-link{
+  display:flex;align-items:center;gap:12px;
+  text-decoration:none;color:var(--charcoal);
+  font-family:var(--font-display);font-size:clamp(1.5rem,2.8vw,2rem);font-weight:700;
+  padding:13px 16px;
+  border-radius:16px;
+  background:transparent;
+  opacity:0;transform:translateX(-15px) scale(0.95);
+  transition:all .4s cubic-bezier(0.22,1,0.36,1);
+}
+.menu-overlay.open .menu-link{opacity:1;transform:translateX(0) scale(1)}
+.menu-overlay.open .menu-link:nth-child(1){transition-delay:.18s}
+.menu-overlay.open .menu-link:nth-child(2){transition-delay:.24s}
+.menu-overlay.open .menu-link:nth-child(3){transition-delay:.30s}
+.menu-overlay.open .menu-link:nth-child(4){transition-delay:.36s}
+
+/* Character-colored dot before each link */
+.menu-link::before{
+  content:'';flex-shrink:0;
+  width:9px;height:9px;border-radius:50%;
+  background:var(--dot,#A8E06C);
+  box-shadow:0 0 0 2px rgba(0,0,0,0.04);
+  transition:transform .3s cubic-bezier(0.34,1.56,0.64,1);
+}
+.menu-link:nth-child(1){--dot:#A8E06C} /* Ket green */
+.menu-link:nth-child(2){--dot:#E8B4B8} /* Tuni pink */
+.menu-link:nth-child(3){--dot:#f5d040} /* Shu Shu yellow */
+.menu-link:nth-child(4){--dot:#7cc4e0} /* Water blue */
+
+.menu-link:hover{background:color-mix(in srgb, var(--dot) 10%, transparent);transform:translateX(4px)}
+.menu-link:hover::before{transform:scale(1.5);box-shadow:0 0 0 3px color-mix(in srgb, var(--dot) 18%, transparent)}
+.menu-link svg{display:none} /* dots replace icons */
+
+/* Menu footer — stitched divider */
+.menu-footer{
+  margin-top:auto;padding-top:18px;
+  border-top:2px dashed rgba(180,160,140,0.2);
+}
+.menu-footer p{
+  font-family:var(--font-display);font-size:0.95rem;color:#aaa;line-height:1.6;
+}
+.menu-socials{display:flex;gap:8px;margin-top:10px}
+.menu-socials a{
+  width:32px;height:32px;border-radius:12px;
+  background:rgba(200,185,170,0.12);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--charcoal);text-decoration:none;transition:all .3s;
+}
+.menu-socials a:hover{background:rgba(168,224,108,0.2);transform:scale(1.1) rotate(-3deg)}
+
+/* ════════════ WORLD VIEWPORT ════════════ */
+.world{position:fixed;inset:0;overflow:hidden}
+
+/* Town container — oversized to guarantee full coverage + pan room */
+.town-wrap{
+  position:absolute;
+  /* 130% of viewport in both directions, centered via negative offset */
+  width:130vw;height:130vh;
+  left:-15vw;top:-15vh;
+  will-change:transform;
+}
+/* Town map — swap src to change the town image
+   Currently: inline SVG. Future: <img src="town.png" class="town-map"> */
+.town-svg, .town-map{
+  width:100%;height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+/* ════════════ HOTSPOTS (overlaid on town) ════════════ */
+.hotspots{position:absolute;inset:0;pointer-events:none}
+.hotspots-inner{
+  position:relative;width:100%;height:100%;
+}
+
+.hotspot{
+  position:absolute;
+  display:flex;flex-direction:column;align-items:center;
+  text-decoration:none;color:var(--charcoal);
+  pointer-events:auto;
+  transition:transform .3s ease;
+  transform:translate(-50%,-50%);
+}
+.hotspot:hover{transform:translate(-50%,-50%) scale(1.05)}
+.hs-ring{
+  width:clamp(50px,7vw,90px);height:clamp(50px,7vw,90px);
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(255,228,181,0.0),transparent);
+  border:2px solid transparent;
+  transition:all .5s ease;
+  position:relative;
+}
+.hs-ring::after{
+  content:'';position:absolute;inset:-5px;border-radius:50%;
+  border:1.5px dashed transparent;transition:all .5s ease;
+}
+.hotspot:hover .hs-ring{
+  background:radial-gradient(circle,rgba(255,228,181,0.4),transparent);
+  border-color:rgba(255,228,181,0.6);
+  box-shadow:0 0 30px var(--glow);
+}
+.hotspot:hover .hs-ring::after{border-color:rgba(255,228,181,0.35);animation:spinRing 8s linear infinite}
+@keyframes spinRing{to{transform:rotate(360deg)}}
+
+.hs-pulse{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(255,200,80,0.2);animation:pulse 3s ease-out infinite}
+@keyframes pulse{0%{transform:scale(1);opacity:.5}100%{transform:scale(1.7);opacity:0}}
+
+.hs-label{
+  margin-top:6px;
+  font-family:var(--font-display);font-size:clamp(.8rem,1.3vw,1.15rem);font-weight:700;
+  letter-spacing:1px;white-space:nowrap;
+  background:rgba(255,255,255,0.7);backdrop-filter:blur(6px);
+  padding:3px 12px;border-radius:16px;
+  text-shadow:0 1px 4px rgba(255,255,255,.5);
+  opacity:0;transform:translateY(6px);transition:all .35s ease;
+}
+.hotspot:hover .hs-label{opacity:1;transform:translateY(0)}
+
+/* Hotspot positions (centered on buildings) */
+.hs-shop{left:50%;top:38%}
+.hs-library{left:16.5%;top:28%}
+.hs-characters{left:74.5%;top:31%}
+
+/* ════════════ PARTICLES ════════════ */
+.particles{position:fixed;inset:0;pointer-events:none;z-index:50}
+
+/* ════════════ TAGLINE ════════════ */
+.tagline{
+  position:fixed;bottom:clamp(10px,2vh,24px);left:50%;transform:translateX(-50%);z-index:60;
+  font-family:var(--font-display);font-size:clamp(.85rem,1.2vw,1.1rem);
+  color:var(--white);opacity:.6;letter-spacing:.5px;white-space:nowrap;pointer-events:none;
+  text-shadow:0 1px 6px rgba(0,0,0,.2);
+  display:flex;align-items:center;gap:8px;
+}
+/* Small paw accent before tagline */
+.tagline::before{
+  content:'';display:inline-block;width:16px;height:16px;flex-shrink:0;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cellipse cx='5.5' cy='5' rx='2.2' ry='2.8' transform='rotate(-10 5.5 5)' fill='%23FEFCF8' opacity='.6'/%3E%3Cellipse cx='10' cy='3.5' rx='2' ry='2.6' fill='%23FEFCF8' opacity='.6'/%3E%3Cellipse cx='14.5' cy='5' rx='2.2' ry='2.8' transform='rotate(10 14.5 5)' fill='%23FEFCF8' opacity='.6'/%3E%3Cpath d='M10 9.5 C8 9,5.5 9,4.5 12 C4 14,5.5 16,7.5 17 C8.5 17.5,9.5 18,10 18 C10.5 18,11.5 17.5,12.5 17 C14.5 16,16 14,15.5 12 C14.5 9,12 9,10 9.5Z' fill='%23FEFCF8' opacity='.6'/%3E%3C/svg%3E") no-repeat center/contain;
+  opacity:.7;
+}
+/* Stitching accent after tagline */
+.tagline::after{
+  content:'';display:inline-block;width:24px;height:1px;flex-shrink:0;
+  border-top:1.5px dashed rgba(254,252,248,0.3);
+}
+
+/* ════════════ GRAIN ════════════ */
+.grain{position:fixed;inset:0;pointer-events:none;z-index:55;opacity:.018;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:150px}
+
+/* ════════════ TOUCH SUPPORT ════════════ */
+.hotspot.touch-active .hs-ring{
+  background:radial-gradient(circle,rgba(255,228,181,0.4),transparent)!important;
+  border-color:rgba(255,228,181,0.6)!important;
+  box-shadow:0 0 30px var(--glow)!important;
+}
+.hotspot.touch-active .hs-label{opacity:1!important;transform:translateY(0)!important}
+
+/* ════════════ RESPONSIVE ════════════ */
+@media(max-width:768px){
+  .hs-ring{width:45px;height:45px}
+  .hs-shop{left:50%;top:38%}
+  .hs-library{left:16.5%;top:28%}
+  .hs-characters{left:74.5%;top:31%}
+}
+html{position:fixed;width:100%}
+</style>
+</head>
+<body>
+
+<!-- SPACE INTRO -->
+<div class="intro" id="intro">
+  <div class="intro-space"></div>
+
+  <!-- Nebula glows -->
+  <div class="intro-nebula nebula-1"></div>
+  <div class="intro-nebula nebula-2"></div>
+  <div class="intro-nebula nebula-3"></div>
+
+  <!-- Stars (generated by JS, but a few static for instant render) -->
+  <div class="intro-stars" id="introStars"></div>
+
+  <!-- Shooting stars -->
+  <div class="intro-shooting shoot-1"></div>
+  <div class="intro-shooting shoot-2"></div>
+
+  <!-- Space dust particles -->
+  <div class="space-dust" style="width:3px;height:3px;top:20%;left:35%;--fdur:15s;--dx:50px;--dy:-30px"></div>
+  <div class="space-dust" style="width:2px;height:2px;top:60%;left:70%;--fdur:18s;--dx:-40px;--dy:20px"></div>
+  <div class="space-dust" style="width:4px;height:4px;top:75%;left:25%;--fdur:12s;--dx:30px;--dy:-50px"></div>
+  <div class="space-dust" style="width:2px;height:2px;top:30%;left:80%;--fdur:20s;--dx:-60px;--dy:10px"></div>
+
+  <!-- Shu Shu in spacesuit, orbiting the whole screen -->
+  <div class="space-shushu">
+    <svg viewBox="0 0 80 90" fill="none">
+      <!-- Space suit body (puffy white suit) -->
+      <ellipse cx="40" cy="52" rx="22" ry="24" fill="#e8e8e8"/>
+      <!-- Suit shading -->
+      <ellipse cx="40" cy="52" rx="22" ry="24" fill="url(#suitShade)"/>
+      <!-- Suit chest panel / life support -->
+      <rect x="30" y="42" width="20" height="14" rx="4" fill="#c8c8c8" stroke="#b0b0b0" stroke-width=".5"/>
+      <!-- Buttons/indicators on chest -->
+      <circle cx="36" cy="48" r="2" fill="#f05050"/>
+      <circle cx="44" cy="48" r="2" fill="#50c050"/>
+      <rect x="35" y="52" width="10" height="2" rx="1" fill="#5b8abf" opacity=".6"/>
+
+      <!-- Space helmet (large bubble) -->
+      <circle cx="40" cy="26" r="20" fill="rgba(180,220,240,.15)" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/>
+      <!-- Helmet reflection -->
+      <ellipse cx="33" cy="19" rx="8" ry="6" fill="rgba(255,255,255,.12)" transform="rotate(-20 33 19)"/>
+      <!-- Helmet ring/seal at neck -->
+      <ellipse cx="40" cy="40" rx="16" ry="5" fill="#c0c0c0" stroke="#a0a0a0" stroke-width=".8"/>
+
+      <!-- Shu Shu face inside helmet -->
+      <!-- Head -->
+      <ellipse cx="40" cy="28" rx="13" ry="12" fill="#f0dca0"/>
+      <!-- Yellow helmet (Shu Shu's signature) peeking under space helmet -->
+      <ellipse cx="40" cy="22" rx="11" ry="7" fill="#f5d040"/>
+      <ellipse cx="40" cy="20" rx="9" ry="5" fill="#e8c030"/>
+      <!-- Face -->
+      <ellipse cx="40" cy="28" rx="10" ry="8" fill="#f5e8c0"/>
+      <!-- Eyes (big, excited) -->
+      <circle cx="35" cy="27" r="3.2" fill="#2a2a2a"/>
+      <circle cx="45" cy="27" r="3.2" fill="#2a2a2a"/>
+      <circle cx="36" cy="26" r="1.1" fill="white"/>
+      <circle cx="46" cy="26" r="1.1" fill="white"/>
+      <!-- Blush -->
+      <ellipse cx="32" cy="30" rx="2.5" ry="1" fill="#f0a0a0" opacity=".3"/>
+      <ellipse cx="48" cy="30" rx="2.5" ry="1" fill="#f0a0a0" opacity=".3"/>
+      <!-- Nose -->
+      <ellipse cx="40" cy="30.5" rx="1.5" ry="1" fill="#d4928f"/>
+      <!-- Open mouth -->
+      <ellipse cx="40" cy="33" rx="2.5" ry="1.8" fill="#2a2a2a" opacity=".5"/>
+
+      <!-- Arms in suit (spread out, floating) -->
+      <path d="M18 50 Q10 42 5 36" stroke="#e0e0e0" stroke-width="8" stroke-linecap="round" fill="none"/>
+      <path d="M62 50 Q70 42 75 36" stroke="#e0e0e0" stroke-width="8" stroke-linecap="round" fill="none"/>
+      <!-- Gloves -->
+      <circle cx="5" cy="35" r="5" fill="#d0d0d0" stroke="#b8b8b8" stroke-width=".5"/>
+      <circle cx="75" cy="35" r="5" fill="#d0d0d0" stroke="#b8b8b8" stroke-width=".5"/>
+
+      <!-- Legs in suit -->
+      <path d="M32 72 Q28 80 26 86" stroke="#e0e0e0" stroke-width="7" stroke-linecap="round" fill="none"/>
+      <path d="M48 72 Q52 80 54 86" stroke="#e0e0e0" stroke-width="7" stroke-linecap="round" fill="none"/>
+      <!-- Boots -->
+      <ellipse cx="25" cy="87" rx="6" ry="3.5" fill="#c0c0c0" stroke="#a8a8a8" stroke-width=".5"/>
+      <ellipse cx="55" cy="87" rx="6" ry="3.5" fill="#c0c0c0" stroke="#a8a8a8" stroke-width=".5"/>
+
+      <!-- Oxygen tube from helmet to backpack -->
+      <path d="M56 30 Q64 30 64 40 Q64 50 58 52" stroke="rgba(200,200,200,.5)" stroke-width="2" stroke-linecap="round" fill="none"/>
+      <!-- Small backpack (life support) -->
+      <rect x="50" y="44" width="10" height="14" rx="3" fill="#d0d0d0" stroke="#b8b8b8" stroke-width=".5"/>
+      <circle cx="55" cy="50" r="1.5" fill="#5b8abf"/>
+
+      <defs>
+        <radialGradient id="suitShade" cx="35%" cy="35%">
+          <stop offset="0%" stop-color="rgba(255,255,255,.1)"/>
+          <stop offset="100%" stop-color="rgba(0,0,0,.08)"/>
+        </radialGradient>
+      </defs>
+    </svg>
+  </div>
+
+  <!-- Planet (center) -->
+  <div class="intro-planet-wrap">
+    <div class="intro-planet" id="introPlanet">
+      <div class="planet-land planet-land-1"></div>
+      <div class="planet-land planet-land-2"></div>
+      <div class="planet-land planet-land-3"></div>
+      <div class="planet-land planet-land-4"></div>
+      <div class="planet-cloud planet-cloud-1"></div>
+      <div class="planet-cloud planet-cloud-2"></div>
+      <div class="planet-cloud planet-cloud-3"></div>
+      <div class="planet-atmo"></div>
+      <div class="planet-pulse"></div>
+    </div>
+  </div>
+
+  <!-- Enter prompt below planet -->
+  <div class="intro-enter" id="introEnter">
+    <div class="intro-enter-text" id="introEnterBtn">Scroll / Click to Enter</div>
+    <div class="intro-enter-arrow"><svg viewBox="0 0 20 20"><polyline points="4 7 10 13 16 7"/></svg></div>
+  </div>
+
+  <!-- Logo at top -->
+  <div class="intro-space-logo">
+    <img src="White Ketshop Text Logo.png" alt="Ketshop" draggable="false">
+  </div>
+
+  <!-- Warp speed canvas -->
+  <canvas class="warp-canvas" id="warpCanvas"></canvas>
+
+  <!-- Atmosphere entry glow -->
+  <div class="intro-atmosphere" id="introAtmo"></div>
+
+  <!-- Shooting stars during zoom -->
+  <div class="zoom-meteors" id="zoomMeteors">
+    <div class="zoom-meteor" style="top:12%;left:65%;--angle:-30deg;--len:90px;--travel:-350px;--dur:.9s;--delay:0s"></div>
+    <div class="zoom-meteor" style="top:25%;left:80%;--angle:-40deg;--len:70px;--travel:-280px;--dur:1.1s;--delay:.15s"></div>
+    <div class="zoom-meteor" style="top:38%;left:20%;--angle:-25deg;--len:100px;--travel:-400px;--dur:.8s;--delay:.3s"></div>
+    <div class="zoom-meteor" style="top:55%;left:75%;--angle:-35deg;--len:60px;--travel:-250px;--dur:1s;--delay:.5s"></div>
+    <div class="zoom-meteor" style="top:18%;left:40%;--angle:-45deg;--len:80px;--travel:-320px;--dur:.85s;--delay:.2s"></div>
+    <div class="zoom-meteor" style="top:65%;left:30%;--angle:-28deg;--len:75px;--travel:-300px;--dur:1.2s;--delay:.4s"></div>
+    <div class="zoom-meteor" style="top:45%;left:55%;--angle:-38deg;--len:55px;--travel:-220px;--dur:.95s;--delay:.65s"></div>
+    <div class="zoom-meteor" style="top:8%;left:25%;--angle:-32deg;--len:85px;--travel:-340px;--dur:1s;--delay:.1s"></div>
+    <div class="zoom-meteor" style="top:72%;left:60%;--angle:-42deg;--len:65px;--travel:-260px;--dur:.75s;--delay:.55s"></div>
+    <div class="zoom-meteor" style="top:35%;left:90%;--angle:-20deg;--len:110px;--travel:-420px;--dur:.7s;--delay:.35s"></div>
+  </div>
+
+  <!-- Space Swimmer ("You" character) -->
+  <div class="space-swimmer" id="spaceSwimmer">
+    <div class="swimmer-label">You</div>
+    <svg class="swimmer-char" viewBox="0 0 40 60">
+      <!-- Left arm (animated) -->
+      <g class="sw-arm-l"><line x1="10" y1="32" x2="1" y2="25" stroke="#f0ebe5" stroke-width="4.5" stroke-linecap="round"/><circle cx="0" cy="24" r="3" fill="#f0ebe5"/></g>
+      <!-- Right arm (animated) -->
+      <g class="sw-arm-r"><line x1="30" y1="32" x2="39" y2="25" stroke="#f0ebe5" stroke-width="4.5" stroke-linecap="round"/><circle cx="40" cy="24" r="3" fill="#f0ebe5"/></g>
+      <!-- Body -->
+      <ellipse cx="20" cy="36" rx="11" ry="14" fill="#f0ebe5"/>
+      <!-- Suit chest panel -->
+      <rect x="15" y="30" width="10" height="7" rx="2" fill="rgba(200,200,200,0.3)"/>
+      <circle cx="18" cy="33" r="1.2" fill="#A8E06C"/>
+      <circle cx="22" cy="33" r="1.2" fill="#E8B4B8"/>
+      <!-- Helmet -->
+      <circle cx="20" cy="16" r="13" fill="rgba(140,200,250,0.2)" stroke="rgba(255,255,255,0.45)" stroke-width="1.2"/>
+      <!-- Face -->
+      <circle cx="15" cy="14" r="2.2" fill="#4A4A4A"/>
+      <circle cx="25" cy="14" r="2.2" fill="#4A4A4A"/>
+      <circle cx="16" cy="13.2" r="0.7" fill="#fff"/>
+      <circle cx="26" cy="13.2" r="0.7" fill="#fff"/>
+      <ellipse cx="20" cy="19.5" rx="2.2" ry="1.6" fill="#4A4A4A"/>
+      <ellipse cx="20" cy="19" rx="1.5" ry="0.8" fill="#e07070" opacity="0.5"/>
+      <!-- Left leg (animated) -->
+      <g class="sw-leg-l"><line x1="16" y1="48" x2="11" y2="57" stroke="#f0ebe5" stroke-width="3.8" stroke-linecap="round"/><ellipse cx="10" cy="58" rx="3.2" ry="2" fill="#ddd"/></g>
+      <!-- Right leg (animated) -->
+      <g class="sw-leg-r"><line x1="24" y1="48" x2="29" y2="57" stroke="#f0ebe5" stroke-width="3.8" stroke-linecap="round"/><ellipse cx="30" cy="58" rx="3.2" ry="2" fill="#ddd"/></g>
+    </svg>
+    <div class="swimmer-glow"></div>
+  </div>
+
+  <!-- Brief white flash for clean transition -->
+  <div class="intro-flash" id="introFlash"></div>
+</div>
+
+<!-- HEADER -->
+<header class="header">
+  <!-- Left: Hamburger -->
+  <div class="hdr-left">
+    <button class="hamburger" id="hamburgerBtn" data-hover aria-label="Menu">
+      <svg class="hamburger-icon" viewBox="0 0 28 22" fill="none">
+        <!-- Organic claw scratches — tapered strokes with slight wobble -->
+        <path class="claw claw-1" d="M4 4.2 C6 3 9.5 2.3 14 3.2 C18.5 4.1 22 3.5 24.5 2.8" stroke="#4A4A4A" stroke-width="2.6" stroke-linecap="round" style="filter:url(#claw-rough)"/>
+        <path class="claw claw-2" d="M5.5 10.5 C8 9.4 11 9 14 10 C17 11 20.5 10.2 23 9.5" stroke="#4A4A4A" stroke-width="2.2" stroke-linecap="round" style="filter:url(#claw-rough)"/>
+        <path class="claw claw-3" d="M4 17 C6.5 16 10 15.5 14 16.5 C18 17.5 21.5 16.8 24.5 16" stroke="#4A4A4A" stroke-width="2.8" stroke-linecap="round" style="filter:url(#claw-rough)"/>
+        <defs>
+          <filter id="claw-rough" x="-5%" y="-20%" width="110%" height="140%">
+            <feTurbulence type="turbulence" baseFrequency="0.35" numOctaves="2" result="noise" seed="3"/>
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.2" xChannelSelector="R" yChannelSelector="G"/>
+          </filter>
+        </defs>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Center: Logo -->
+  <div class="hdr-center">
+    <a href="#" class="hdr-logo" data-hover>
+      <img src="White Ketshop Text Logo.png" alt="Ketshop" draggable="false">
+    </a>
+  </div>
+
+  <div class="hdr-right"></div>
+</header>
+
+<!-- SLIDE-OUT MENU -->
+<div class="menu-overlay" id="menuOverlay">
+  <div class="menu-backdrop" id="menuBackdrop"></div>
+  <div class="menu-panel">
+    <nav class="menu-nav">
+      <a href="#" class="menu-link" data-hover>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Home
+      </a>
+      <a href="#" class="menu-link" data-hover>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        Shop
+      </a>
+      <a href="#" class="menu-link" data-hover>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/><line x1="6" y1="8" x2="6" y2="11"/><line x1="10" y1="7" x2="10" y2="11"/><line x1="14" y1="9" x2="14" y2="11"/><line x1="18" y1="6" x2="18" y2="11"/></svg>
+        Webtoon
+      </a>
+      <a href="#" class="menu-link" data-hover>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        About Us
+      </a>
+    </nav>
+    <div class="menu-footer">
+      <p>...Thanks for visiting.</p>
+      <div class="menu-socials">
+        <a href="#" data-hover aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/></svg>
+        </a>
+        <a href="#" data-hover aria-label="YouTube">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19.13C5.12 19.56 12 19.56 12 19.56s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.43z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WORLD -->
+<div class="world" id="world">
+  <div class="town-wrap">
+    <!-- TOWN MAP: To swap for an image, replace the <svg> below with:
+         <img class="town-map" src="town.png" alt="Ketshop Town" draggable="false"> -->
+    <svg class="town-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" fill="none">
+      <defs>
+        <!-- Grass texture pattern -->
+        <pattern id="grassPat" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+          <rect width="20" height="20" fill="#7cb87c"/>
+          <circle cx="5" cy="5" r="1" fill="#72b272" opacity=".4"/>
+          <circle cx="15" cy="12" r="1.2" fill="#86c486" opacity=".3"/>
+          <circle cx="10" cy="18" r=".8" fill="#68a868" opacity=".4"/>
+        </pattern>
+        <!-- Water ripple -->
+        <pattern id="waterPat" x="0" y="0" width="30" height="30" patternUnits="userSpaceOnUse">
+          <rect width="30" height="30" fill="#7cc4e0"/>
+          <path d="M0 15 Q7.5 12 15 15 Q22.5 18 30 15" stroke="#a0daf0" stroke-width=".6" fill="none" opacity=".5"/>
+          <path d="M0 8 Q7.5 5 15 8 Q22.5 11 30 8" stroke="#90d0e8" stroke-width=".5" fill="none" opacity=".3"/>
+        </pattern>
+        <!-- Shadow filter -->
+        <filter id="shadow"><feDropShadow dx="2" dy="3" stdDeviation="3" flood-color="#000" flood-opacity=".12"/></filter>
+        <filter id="shadowSm"><feDropShadow dx="1" dy="2" stdDeviation="2" flood-color="#000" flood-opacity=".1"/></filter>
+        <filter id="glow"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <!-- Window glow animation uses CSS -->
+      </defs>
+
+      <!-- ═══════ GRASS BACKGROUND ═══════ -->
+      <rect width="1600" height="900" fill="url(#grassPat)"/>
+      <!-- Grass variation patches -->
+      <ellipse cx="200" cy="200" rx="120" ry="80" fill="#6ab06a" opacity=".35"/>
+      <ellipse cx="1400" cy="150" rx="150" ry="90" fill="#80c480" opacity=".3"/>
+      <ellipse cx="800" cy="800" rx="200" ry="100" fill="#6ab06a" opacity=".25"/>
+      <ellipse cx="100" cy="700" rx="130" ry="80" fill="#80c480" opacity=".3"/>
+      <ellipse cx="1500" cy="650" rx="120" ry="80" fill="#70b870" opacity=".25"/>
+
+      <!-- ═══════ STREAM / POND (top-right area) ═══════ -->
+      <path d="M1250 100 Q1300 150 1280 220 Q1260 290 1320 350 Q1380 410 1350 480 Q1320 530 1370 580" stroke="url(#waterPat)" stroke-width="50" stroke-linecap="round" fill="none" opacity=".8"/>
+      <ellipse cx="1350" cy="580" rx="65" ry="45" fill="url(#waterPat)" opacity=".8"/>
+      <!-- Lily pads -->
+      <ellipse cx="1340" cy="570" rx="8" ry="5" fill="#5aaa5a" opacity=".6"/>
+      <ellipse cx="1365" cy="590" rx="6" ry="4" fill="#4a9a4a" opacity=".5"/>
+      <circle cx="1375" cy="575" r="2.5" fill="#f080b0" opacity=".6"/>
+
+      <!-- ═══════ PATHS (winding through town) ═══════ -->
+      <!-- Main road (horizontal) -->
+      <path d="M0 520 Q200 510 400 530 Q600 545 800 520 Q1000 495 1200 520 Q1400 540 1600 510" stroke="#d4c49a" stroke-width="52" stroke-linecap="round" fill="none"/>
+      <path d="M0 520 Q200 510 400 530 Q600 545 800 520 Q1000 495 1200 520 Q1400 540 1600 510" stroke="#c4b088" stroke-width="52" stroke-linecap="round" fill="none" opacity=".15" stroke-dasharray="4 8"/>
+
+      <!-- Path to Ketshop (vertical, center) -->
+      <path d="M780 520 Q790 460 800 400 Q810 340 800 280" stroke="#d4c49a" stroke-width="40" stroke-linecap="round" fill="none"/>
+      <path d="M780 520 Q790 460 800 400 Q810 340 800 280" stroke="#c4b088" stroke-width="40" stroke-linecap="round" fill="none" opacity=".15" stroke-dasharray="4 6"/>
+
+      <!-- Side path left -->
+      <path d="M400 530 Q350 480 300 400 Q260 330 230 260" stroke="#d4c49a" stroke-width="32" stroke-linecap="round" fill="none"/>
+
+      <!-- Side path right -->
+      <path d="M1200 520 Q1240 460 1250 380" stroke="#d4c49a" stroke-width="30" stroke-linecap="round" fill="none"/>
+
+      <!-- Path to bottom -->
+      <path d="M800 520 Q790 600 800 700 Q810 800 800 900" stroke="#d4c49a" stroke-width="45" stroke-linecap="round" fill="none"/>
+
+      <!-- ═══════ BRIDGE over stream ═══════ -->
+      <rect x="1225" y="330" width="70" height="40" rx="4" fill="#a08050" stroke="#8a6a3a" stroke-width="1.5" transform="rotate(-8 1260 350)"/>
+      <line x1="1230" y1="335" x2="1230" y2="365" stroke="#8a6a3a" stroke-width="1.5" transform="rotate(-8 1260 350)"/>
+      <line x1="1250" y1="333" x2="1250" y2="363" stroke="#8a6a3a" stroke-width="1.5" transform="rotate(-8 1260 350)"/>
+      <line x1="1270" y1="331" x2="1270" y2="361" stroke="#8a6a3a" stroke-width="1.5" transform="rotate(-8 1260 350)"/>
+      <line x1="1290" y1="329" x2="1290" y2="359" stroke="#8a6a3a" stroke-width="1.5" transform="rotate(-8 1260 350)"/>
+
+      <!-- ═══════ TREES (seen from top - circular canopies) ═══════ -->
+      <!-- Tree shadows first (behind trees) -->
+      <g opacity=".12">
+        <ellipse cx="108" cy="318" rx="38" ry="28"/>
+        <ellipse cx="538" cy="238" rx="32" ry="22"/>
+        <ellipse cx="1058" cy="228" rx="36" ry="26"/>
+        <ellipse cx="148" cy="568" rx="30" ry="20"/>
+        <ellipse cx="1468" cy="268" rx="40" ry="28"/>
+        <ellipse cx="648" cy="178" rx="28" ry="20"/>
+        <ellipse cx="958" cy="168" rx="34" ry="24"/>
+        <ellipse cx="1108" cy="648" rx="32" ry="22"/>
+        <ellipse cx="358" cy="738" rx="36" ry="24"/>
+        <ellipse cx="608" cy="768" rx="28" ry="18"/>
+        <ellipse cx="1368" cy="728" rx="34" ry="22"/>
+      </g>
+
+      <!-- Trees (top-down: circle with highlight crescent) -->
+      <g filter="url(#shadowSm)">
+        <!-- Top-left cluster -->
+        <circle cx="100" cy="310" r="42" fill="#4a9a4a"/>
+        <circle cx="100" cy="310" r="42" fill="url(#treeGrad1)"/>
+        <ellipse cx="88" cy="298" rx="22" ry="18" fill="#60b060" opacity=".6"/>
+        <circle cx="80" cy="290" r="6" fill="#70c070" opacity=".4"/>
+
+        <circle cx="160" cy="260" r="30" fill="#4a9a4a"/>
+        <ellipse cx="150" cy="250" rx="16" ry="12" fill="#5aaa5a" opacity=".5"/>
+
+        <!-- Mid-left -->
+        <circle cx="140" cy="560" r="34" fill="#4a9a4a"/>
+        <ellipse cx="130" cy="548" rx="18" ry="14" fill="#60b060" opacity=".55"/>
+
+        <!-- Top scattered -->
+        <circle cx="530" cy="230" r="35" fill="#4a9a4a"/>
+        <ellipse cx="518" cy="218" rx="18" ry="14" fill="#60b060" opacity=".5"/>
+
+        <circle cx="645" cy="170" r="30" fill="#4a9a4a"/>
+        <ellipse cx="635" cy="160" rx="16" ry="12" fill="#5aaa5a" opacity=".5"/>
+
+        <circle cx="950" cy="160" r="38" fill="#4a9a4a"/>
+        <ellipse cx="938" cy="148" rx="20" ry="16" fill="#60b060" opacity=".55"/>
+
+        <circle cx="1050" cy="220" r="40" fill="#4a9a4a"/>
+        <ellipse cx="1038" cy="206" rx="22" ry="16" fill="#60b060" opacity=".6"/>
+        <circle cx="1030" cy="198" r="7" fill="#70c070" opacity=".35"/>
+
+        <!-- Right side -->
+        <circle cx="1460" cy="260" r="44" fill="#4a9a4a"/>
+        <ellipse cx="1446" cy="244" rx="24" ry="18" fill="#60b060" opacity=".6"/>
+        <circle cx="1436" cy="236" r="7" fill="#70c070" opacity=".3"/>
+
+        <circle cx="1500" cy="340" r="28" fill="#4a9a4a"/>
+        <ellipse cx="1490" cy="330" rx="14" ry="10" fill="#5aaa5a" opacity=".5"/>
+
+        <!-- Bottom trees -->
+        <circle cx="350" cy="730" r="40" fill="#4a9a4a"/>
+        <ellipse cx="338" cy="716" rx="22" ry="16" fill="#60b060" opacity=".55"/>
+
+        <circle cx="600" cy="760" r="32" fill="#4a9a4a"/>
+        <ellipse cx="590" cy="750" rx="16" ry="12" fill="#5aaa5a" opacity=".5"/>
+
+        <circle cx="1100" cy="640" r="36" fill="#4a9a4a"/>
+        <ellipse cx="1088" cy="628" rx="18" ry="14" fill="#60b060" opacity=".55"/>
+
+        <circle cx="1360" cy="720" r="38" fill="#4a9a4a"/>
+        <ellipse cx="1348" cy="706" rx="20" ry="16" fill="#60b060" opacity=".55"/>
+      </g>
+
+      <!-- ═══════ BUSHES & FLOWERS (small green blobs) ═══════ -->
+      <g>
+        <ellipse cx="440" cy="490" rx="14" ry="10" fill="#5aaa5a"/><ellipse cx="436" cy="486" rx="8" ry="5" fill="#6aba6a" opacity=".5"/>
+        <ellipse cx="700" cy="280" rx="10" ry="7" fill="#5aaa5a"/>
+        <ellipse cx="900" cy="290" rx="12" ry="8" fill="#5aaa5a"/><ellipse cx="896" cy="286" rx="6" ry="4" fill="#6aba6a" opacity=".4"/>
+        <ellipse cx="1140" cy="500" rx="11" ry="8" fill="#5aaa5a"/>
+        <ellipse cx="480" cy="610" rx="12" ry="9" fill="#5aaa5a"/>
+        <ellipse cx="1030" cy="590" rx="10" ry="7" fill="#5aaa5a"/>
+        <!-- Flowers -->
+        <circle cx="430" cy="480" r="3" fill="#f08080" opacity=".7"/>
+        <circle cx="448" cy="485" r="2.5" fill="#f0d060" opacity=".7"/>
+        <circle cx="710" cy="276" r="2" fill="#d080c0" opacity=".6"/>
+        <circle cx="476" cy="604" r="2.5" fill="#f08080" opacity=".7"/>
+        <circle cx="488" cy="616" r="2" fill="#f0f0e8" opacity=".6"/>
+        <circle cx="1035" cy="584" r="2.5" fill="#f0d060" opacity=".7"/>
+        <circle cx="1145" cy="494" r="2" fill="#d080c0" opacity=".6"/>
+        <!-- More scattered flowers -->
+        <circle cx="200" cy="450" r="2.5" fill="#f08080" opacity=".5"/>
+        <circle cx="210" cy="440" r="2" fill="#f0d060" opacity=".5"/>
+        <circle cx="680" cy="680" r="3" fill="#d080c0" opacity=".5"/>
+        <circle cx="695" cy="690" r="2" fill="#f0f0e8" opacity=".5"/>
+        <circle cx="1300" cy="480" r="2.5" fill="#f08080" opacity=".5"/>
+        <circle cx="1310" cy="470" r="2" fill="#f0d060" opacity=".4"/>
+      </g>
+
+      <!-- ═══════ FENCES ═══════ -->
+      <g stroke="#c0a070" stroke-width="2" opacity=".5">
+        <line x1="680" y1="300" x2="680" y2="288"/><line x1="690" y1="300" x2="690" y2="288"/>
+        <line x1="700" y1="300" x2="700" y2="288"/><line x1="678" y1="294" x2="702" y2="294"/>
+        <line x1="900" y1="300" x2="900" y2="288"/><line x1="910" y1="300" x2="910" y2="288"/>
+        <line x1="920" y1="300" x2="920" y2="288"/><line x1="898" y1="294" x2="922" y2="294"/>
+      </g>
+
+      <!-- ═══════════════════════════════════════
+           BUILDINGS (Top-down isometric: roof visible)
+           ═══════════════════════════════════════ -->
+
+      <!-- ─── KETSHOP (Center, largest) ─── -->
+      <g filter="url(#shadow)" id="ketshop">
+        <!-- Building footprint / walls (seen from angle) -->
+        <rect x="730" y="290" width="140" height="100" rx="5" fill="#f0e8d4"/>
+        <rect x="730" y="290" width="140" height="100" rx="5" fill="#e8dcc0" opacity=".3"/>
+        <!-- Front face hint -->
+        <rect x="730" y="370" width="140" height="18" rx="0" fill="#ddd0b8"/>
+        <!-- Door -->
+        <rect x="790" y="358" width="24" height="30" rx="3" fill="#8a6a4a"/>
+        <circle cx="810" cy="375" r="2" fill="#c0a070"/>
+        <rect x="790" y="358" width="24" height="6" rx="1" fill="#7a5a3a"/>
+        <!-- Windows -->
+        <rect x="745" y="340" width="28" height="20" rx="3" fill="#a8d8ea" stroke="#c0b090" stroke-width="1"/>
+        <line x1="759" y1="340" x2="759" y2="360" stroke="#c0b090" stroke-width=".8"/>
+        <line x1="745" y1="350" x2="773" y2="350" stroke="#c0b090" stroke-width=".8"/>
+        <!-- Window glow -->
+        <rect x="746" y="341" width="26" height="18" rx="2" fill="rgba(255,200,80,.3)" class="win-glow"/>
+
+        <rect x="828" y="340" width="28" height="20" rx="3" fill="#a8d8ea" stroke="#c0b090" stroke-width="1"/>
+        <line x1="842" y1="340" x2="842" y2="360" stroke="#c0b090" stroke-width=".8"/>
+        <line x1="828" y1="350" x2="856" y2="350" stroke="#c0b090" stroke-width=".8"/>
+        <rect x="829" y="341" width="26" height="18" rx="2" fill="rgba(255,200,80,.3)" class="win-glow"/>
+
+        <!-- ROOF (top-down: dominant element, brown with ridge) -->
+        <rect x="720" y="272" width="160" height="90" rx="6" fill="#a0644a"/>
+        <rect x="720" y="272" width="160" height="90" rx="6" fill="#8a5038" opacity=".2"/>
+        <!-- Ridge line -->
+        <line x1="800" y1="276" x2="800" y2="358" stroke="#c07858" stroke-width="3" opacity=".5"/>
+        <!-- Tile texture -->
+        <g stroke="#8a5038" stroke-width=".5" opacity=".2">
+          <line x1="724" y1="290" x2="876" y2="290"/><line x1="724" y1="308" x2="876" y2="308"/>
+          <line x1="724" y1="326" x2="876" y2="326"/><line x1="724" y1="344" x2="876" y2="344"/>
+        </g>
+        <!-- Awning (over door, visible as rectangle below roof edge) -->
+        <rect x="740" y="358" width="120" height="14" rx="2" fill="#8B4513"/>
+        <text x="800" y="369" font-family="Gaegu, cursive" font-size="11" fill="#FFE4B5" text-anchor="middle" font-weight="700" letter-spacing="3">KETSHOP</text>
+
+        <!-- Shop sign (circle on side) -->
+        <circle cx="726" cy="350" r="14" fill="#5a8a5a" stroke="#4a7a4a" stroke-width="1.5"/>
+        <circle cx="726" cy="350" r="8" fill="white" opacity=".7"/>
+        <ellipse cx="723" cy="349" rx="3" ry="2.5" fill="#A8E06C"/><ellipse cx="729" cy="349" rx="3" ry="2.5" fill="#A8E06C"/>
+        <circle cx="723.5" cy="349.5" r="1.3" fill="#2a2a2a"/><circle cx="729.5" cy="349.5" r="1.3" fill="#2a2a2a"/>
+
+        <!-- Potted plants at door -->
+        <circle cx="783" cy="384" r="7" fill="#5aaa5a"/><rect x="780" y="387" width="6" height="6" rx="1" fill="#b06830"/>
+        <circle cx="820" cy="384" r="6" fill="#4a9a4a"/><rect x="817" y="387" width="6" height="6" rx="1" fill="#b06830"/>
+      </g>
+
+      <!-- ─── LEFT BUILDING: Library (Webtoon / Story) ─── -->
+      <g filter="url(#shadow)" id="library">
+        <!-- Walls — warm stone -->
+        <rect x="200" y="200" width="130" height="100" rx="5" fill="#e8dcc0"/>
+        <rect x="200" y="200" width="130" height="100" rx="5" fill="#ddd0b0" opacity=".3"/>
+        <!-- Front face -->
+        <rect x="200" y="280" width="130" height="16" rx="0" fill="#d4c4a0"/>
+        <!-- Double doors (arched) -->
+        <rect x="248" y="268" width="12" height="28" rx="2" fill="#6a4a2a"/>
+        <rect x="262" y="268" width="12" height="28" rx="2" fill="#7a5a3a"/>
+        <ellipse cx="260" cy="268" rx="14" ry="8" fill="#6a4a2a"/>
+        <circle cx="258" cy="280" r="1.5" fill="#c0a070"/>
+        <circle cx="266" cy="280" r="1.5" fill="#c0a070"/>
+        <!-- Tall arched windows (library style) -->
+        <rect x="212" y="254" width="18" height="26" rx="9" fill="#a8d8ea" stroke="#b0a080" stroke-width=".8"/>
+        <rect x="213" y="255" width="16" height="24" rx="8" fill="rgba(255,200,80,.2)" class="win-glow"/>
+        <line x1="221" y1="254" x2="221" y2="280" stroke="#b0a080" stroke-width=".6"/>
+        <rect x="294" y="254" width="18" height="26" rx="9" fill="#a8d8ea" stroke="#b0a080" stroke-width=".8"/>
+        <rect x="295" y="255" width="16" height="24" rx="8" fill="rgba(255,200,80,.2)" class="win-glow"/>
+        <line x1="303" y1="254" x2="303" y2="280" stroke="#b0a080" stroke-width=".6"/>
+        <!-- Small round window (attic) -->
+        <circle cx="265" cy="232" r="8" fill="#a8d8ea" stroke="#b0a080" stroke-width=".8"/>
+        <line x1="265" y1="224" x2="265" y2="240" stroke="#b0a080" stroke-width=".5"/>
+        <line x1="257" y1="232" x2="273" y2="232" stroke="#b0a080" stroke-width=".5"/>
+        <!-- ROOF — deep teal/blue-green (scholarly) -->
+        <rect x="192" y="182" width="146" height="78" rx="5" fill="#4a7a6a"/>
+        <rect x="192" y="182" width="146" height="78" rx="5" fill="#3a6a5a" opacity=".2"/>
+        <!-- Ridge -->
+        <line x1="265" y1="186" x2="265" y2="256" stroke="#5a8a7a" stroke-width="2.5" opacity=".5"/>
+        <!-- Tile lines -->
+        <g stroke="#3a6a5a" stroke-width=".5" opacity=".2">
+          <line x1="196" y1="200" x2="334" y2="200"/><line x1="196" y1="218" x2="334" y2="218"/>
+          <line x1="196" y1="236" x2="334" y2="236"/>
+        </g>
+        <!-- Awning with sign -->
+        <rect x="218" y="268" width="94" height="12" rx="2" fill="#3a5a4a"/>
+        <text x="265" y="278" font-family="Gaegu, cursive" font-size="9" fill="#d0e8d0" text-anchor="middle" font-weight="700" letter-spacing="2">LIBRARY</text>
+        <!-- Book stack decoration outside door -->
+        <g transform="translate(285,286)">
+          <rect x="0" y="0" width="8" height="3" rx=".5" fill="#c06040"/>
+          <rect x="-1" y="3" width="10" height="3" rx=".5" fill="#4a7a9a"/>
+          <rect x="1" y="6" width="7" height="3" rx=".5" fill="#E8B4B8"/>
+        </g>
+        <!-- Small lantern by door -->
+        <rect x="240" y="284" width="4" height="8" rx="1" fill="#5a4a3a"/>
+        <ellipse cx="242" cy="283" rx="4" ry="3" fill="#e8d8b8" opacity=".7"/>
+        <ellipse cx="242" cy="283" rx="6" ry="6" fill="rgba(255,200,80,.12)"/>
+      </g>
+
+      <!-- ─── RIGHT BUILDING: Characters House ─── -->
+      <g filter="url(#shadow)" id="charHouse">
+        <!-- Walls — warm pink-cream (cozy home feel) -->
+        <rect x="1130" y="230" width="120" height="95" rx="5" fill="#f0e0e0"/>
+        <rect x="1130" y="230" width="120" height="95" rx="5" fill="#e8d4d4" opacity=".3"/>
+        <!-- Front face -->
+        <rect x="1130" y="308" width="120" height="14" rx="0" fill="#e0c8c8"/>
+        <!-- Door (rounded, homey) -->
+        <rect x="1178" y="296" width="22" height="26" rx="3" fill="#8a6a4a"/>
+        <rect x="1178" y="296" width="22" height="5" rx="1" fill="#7a5a3a"/>
+        <ellipse cx="1189" cy="296" rx="12" ry="6" fill="#7a5a3a"/>
+        <circle cx="1196" cy="310" r="1.8" fill="#c0a070"/>
+        <!-- Windows with curtains -->
+        <rect x="1140" y="286" width="24" height="18" rx="3" fill="#a8d8ea" stroke="#c0a8a8" stroke-width=".8"/>
+        <rect x="1141" y="287" width="22" height="16" rx="2" fill="rgba(255,200,80,.25)" class="win-glow"/>
+        <!-- Curtain hints -->
+        <line x1="1143" y1="287" x2="1146" y2="303" stroke="#E8B4B8" stroke-width="1.5" opacity=".4"/>
+        <line x1="1160" y1="287" x2="1157" y2="303" stroke="#E8B4B8" stroke-width="1.5" opacity=".4"/>
+        <rect x="1216" y="286" width="24" height="18" rx="3" fill="#a8d8ea" stroke="#c0a8a8" stroke-width=".8"/>
+        <rect x="1217" y="287" width="22" height="16" rx="2" fill="rgba(255,200,80,.25)" class="win-glow"/>
+        <line x1="1219" y1="287" x2="1222" y2="303" stroke="#E8B4B8" stroke-width="1.5" opacity=".4"/>
+        <line x1="1236" y1="287" x2="1233" y2="303" stroke="#E8B4B8" stroke-width="1.5" opacity=".4"/>
+        <!-- ROOF — Tuni pink (warm, character-themed) -->
+        <rect x="1122" y="215" width="136" height="80" rx="5" fill="#d0909a"/>
+        <rect x="1122" y="215" width="136" height="80" rx="5" fill="#c08090" opacity=".2"/>
+        <!-- Ridge -->
+        <line x1="1190" y1="219" x2="1190" y2="291" stroke="#e0a0aa" stroke-width="2.5" opacity=".5"/>
+        <!-- Tile lines -->
+        <g stroke="#b07080" stroke-width=".5" opacity=".2">
+          <line x1="1126" y1="233" x2="1254" y2="233"/><line x1="1126" y1="251" x2="1254" y2="251"/>
+          <line x1="1126" y1="269" x2="1254" y2="269"/>
+        </g>
+        <!-- Awning with sign -->
+        <rect x="1148" y="296" width="82" height="12" rx="2" fill="#a06070"/>
+        <text x="1189" y="306" font-family="Gaegu, cursive" font-size="9" fill="#f0e0e0" text-anchor="middle" font-weight="700" letter-spacing="2">CHARACTERS</text>
+        <!-- Paw print sign hanging from roof -->
+        <circle cx="1126" cy="290" r="12" fill="#f0e0e8" stroke="#d0909a" stroke-width="1.5"/>
+        <!-- Mini paw inside sign -->
+        <circle cx="1122" cy="287" r="2" fill="#d0909a"/>
+        <circle cx="1126" cy="285" r="1.8" fill="#d0909a"/>
+        <circle cx="1130" cy="287" r="2" fill="#d0909a"/>
+        <ellipse cx="1126" cy="292" rx="4" ry="3" fill="#d0909a"/>
+        <!-- Welcome mat -->
+        <rect x="1175" y="320" width="28" height="5" rx="1.5" fill="#c9a96e" opacity=".6"/>
+        <!-- Flower pot -->
+        <circle cx="1210" cy="318" r="5" fill="#5aaa5a"/><rect x="1207" y="320" width="6" height="5" rx="1" fill="#b06830"/>
+        <circle cx="1212" cy="314" r="2" fill="#E8B4B8" opacity=".7"/>
+      </g>
+
+
+      <!-- ─── Lamp posts ─── -->
+      <g>
+        <!-- Left lamp -->
+        <rect x="558" y="500" width="4" height="30" rx="1" fill="#5a4a3a"/>
+        <ellipse cx="560" cy="498" rx="8" ry="5" fill="#e8d8b8" stroke="#5a4a3a" stroke-width="1"/>
+        <ellipse cx="560" cy="498" rx="12" ry="12" fill="rgba(255,200,80,.15)"/>
+        <!-- Right lamp -->
+        <rect x="1018" y="500" width="4" height="30" rx="1" fill="#5a4a3a"/>
+        <ellipse cx="1020" cy="498" rx="8" ry="5" fill="#e8d8b8" stroke="#5a4a3a" stroke-width="1"/>
+        <ellipse cx="1020" cy="498" rx="12" ry="12" fill="rgba(255,200,80,.15)"/>
+      </g>
+
+      <!-- ─── Bench ─── -->
+      <g>
+        <rect x="460" y="545" width="30" height="5" rx="1.5" fill="#9b7b5b"/>
+        <rect x="460" y="540" width="30" height="4" rx="1.5" fill="#8b6b4b"/>
+        <rect x="464" y="550" width="3" height="8" rx=".5" fill="#6b5040"/>
+        <rect x="483" y="550" width="3" height="8" rx=".5" fill="#6b5040"/>
+      </g>
+
+      <!-- ═══════════════════════════════════════
+           CHARACTERS (seen from slightly above)
+           ═══════════════════════════════════════ -->
+
+      <!-- KET (in front of shop door) -->
+      <g id="charKet" transform="translate(792, 395)">
+        <ellipse cx="10" cy="16" rx="10" ry="6" fill="rgba(0,0,0,.08)"/>
+        <!-- Body (top-down: head is the main circle) -->
+        <ellipse cx="10" cy="8" rx="9" ry="10" fill="#4A4A4A"/>
+        <!-- Apron peek -->
+        <ellipse cx="10" cy="12" rx="6" ry="5" fill="#8aab90" opacity=".6"/>
+        <!-- Ears -->
+        <path d="M4 2 L6 -5 L9 1Z" fill="#4A4A4A"/>
+        <path d="M11 1 L14 -5 L16 2Z" fill="#4A4A4A"/>
+        <path d="M5 2 L6.5 -3 L8.5 1.5Z" fill="#d4928f" opacity=".3"/>
+        <path d="M11.5 1.5 L13.5 -3 L15 2Z" fill="#d4928f" opacity=".3"/>
+        <!-- Eyes -->
+        <ellipse cx="7" cy="6" rx="2.5" ry="2" fill="#A8E06C"/>
+        <ellipse cx="13" cy="6" rx="2.5" ry="2" fill="#A8E06C"/>
+        <circle cx="7.3" cy="6.2" r="1.2" fill="#2a2a2a"/>
+        <circle cx="13.3" cy="6.2" r="1.2" fill="#2a2a2a"/>
+        <!-- Droopy lids -->
+        <path d="M4.5 4.5 Q7 3.5 9.5 4.5" fill="#4A4A4A"/>
+        <path d="M10.5 4.5 Q13 3.5 15.5 4.5" fill="#4A4A4A"/>
+        <!-- Nose -->
+        <ellipse cx="10" cy="8.5" rx="1" ry=".6" fill="#6b6b6b"/>
+        <!-- Tail -->
+        <path d="M18 10 Q24 6 22 0" stroke="#4A4A4A" stroke-width="2.5" stroke-linecap="round" fill="none" class="ket-tail"/>
+      </g>
+
+      <!-- TUNI (on path, heading toward shop) -->
+      <g id="charTuni" transform="translate(680, 530)">
+        <ellipse cx="8" cy="14" rx="8" ry="5" fill="rgba(0,0,0,.06)"/>
+        <ellipse cx="8" cy="7" rx="7.5" ry="9" fill="#f0e0e8"/>
+        <!-- Ears -->
+        <ellipse cx="4" cy="-6" rx="3" ry="9" fill="#f0e0e8" transform="rotate(-5 4 -6)"/>
+        <ellipse cx="12" cy="-6" rx="3" ry="9" fill="#f0e0e8" transform="rotate(5 12 -6)"/>
+        <ellipse cx="4" cy="-6" rx="1.8" ry="6" fill="#f0b0b8" opacity=".3" transform="rotate(-5 4 -6)"/>
+        <ellipse cx="12" cy="-6" rx="1.8" ry="6" fill="#f0b0b8" opacity=".3" transform="rotate(5 12 -6)"/>
+        <!-- Eyes -->
+        <ellipse cx="5.5" cy="5.5" rx="2.8" ry="3" fill="#2a2a2a"/>
+        <ellipse cx="10.5" cy="5.5" rx="2.8" ry="3" fill="#2a2a2a"/>
+        <ellipse cx="6.2" cy="4.8" rx="1.2" ry="1.4" fill="white"/>
+        <ellipse cx="11.2" cy="4.8" rx="1.2" ry="1.4" fill="white"/>
+        <!-- Blush -->
+        <ellipse cx="2.5" cy="8" rx="2" ry="1" fill="#f0a0a0" opacity=".25"/>
+        <ellipse cx="13.5" cy="8" rx="2" ry="1" fill="#f0a0a0" opacity=".25"/>
+        <!-- Notebook -->
+        <rect x="15" y="4" width="7" height="9" rx="1.5" fill="#a8d8ea" transform="rotate(10 15 4)"/>
+      </g>
+
+      <!-- SHU SHU (on right path with delivery box) -->
+      <g id="charShushu" transform="translate(920, 505)">
+        <ellipse cx="8" cy="14" rx="9" ry="5" fill="rgba(0,0,0,.06)"/>
+        <!-- Round body from above -->
+        <ellipse cx="8" cy="6" rx="9" ry="10" fill="#f0dca0"/>
+        <!-- Helmet -->
+        <ellipse cx="8" cy="2" rx="8" ry="5.5" fill="#f5d040"/>
+        <ellipse cx="8" cy="0" rx="6.5" ry="3.5" fill="#e8c030"/>
+        <!-- Face -->
+        <ellipse cx="8" cy="6" rx="6" ry="5" fill="#f5e8c0"/>
+        <!-- Eyes -->
+        <circle cx="5.5" cy="5.5" r="1.8" fill="#2a2a2a"/>
+        <circle cx="10.5" cy="5.5" r="1.8" fill="#2a2a2a"/>
+        <circle cx="6" cy="5" r=".7" fill="white"/>
+        <circle cx="11" cy="5" r=".7" fill="white"/>
+        <!-- Nose -->
+        <ellipse cx="8" cy="7.5" rx="1.2" ry=".8" fill="#d4928f"/>
+        <!-- Overalls -->
+        <ellipse cx="8" cy="11" rx="6" ry="4" fill="#5b8abf" opacity=".5"/>
+        <!-- Delivery box on back -->
+        <rect x="14" y="2" width="10" height="8" rx="2" fill="#c9a96e" stroke="#8b7355" stroke-width=".8"/>
+        <line x1="16" y1="6" x2="22" y2="6" stroke="#8b7355" stroke-width=".6"/>
+      </g>
+
+      <!-- DAWG (near right building, lurking) -->
+      <g id="charDawg" transform="translate(1075, 545)">
+        <ellipse cx="9" cy="16" rx="9" ry="5" fill="rgba(0,0,0,.06)"/>
+        <ellipse cx="9" cy="8" rx="9" ry="11" fill="#8b7b6b"/>
+        <!-- Jacket -->
+        <ellipse cx="9" cy="12" rx="7" ry="5" fill="#2a2a2a" opacity=".6"/>
+        <!-- Ears -->
+        <ellipse cx="3" cy="-1" rx="4" ry="5" fill="#7b6b5b" transform="rotate(-10 3 -1)"/>
+        <ellipse cx="15" cy="-1" rx="4" ry="5" fill="#7b6b5b" transform="rotate(10 15 -1)"/>
+        <!-- Sunglasses -->
+        <rect x="2" y="4" width="6" height="4" rx="1.5" fill="#1a1a1a"/>
+        <rect x="10" y="4" width="6" height="4" rx="1.5" fill="#1a1a1a"/>
+        <line x1="8" y1="6" x2="10" y2="6" stroke="#1a1a1a" stroke-width="1"/>
+        <rect x="3" y="4.5" width="2" height="1.2" rx=".5" fill="white" opacity=".1"/>
+        <rect x="11" y="4.5" width="2" height="1.2" rx=".5" fill="white" opacity=".1"/>
+        <!-- Snout -->
+        <ellipse cx="9" cy="9" rx="3" ry="2" fill="#9b8b7b"/>
+        <ellipse cx="9" cy="8.5" rx="1.2" ry=".8" fill="#2a2a2a"/>
+      </g>
+
+      <!-- ═══════ DECORATIVE DETAILS ═══════ -->
+      <!-- Small stars/sparkles near characters -->
+      <g fill="#FFE4B5" opacity=".4">
+        <polygon points="820,388 821,392 825,393 821,394 820,398 819,394 815,393 819,392" transform="scale(.6)"/>
+      </g>
+
+      <!-- Warm sunlight overlay gradient -->
+      <rect width="1600" height="900" fill="url(#sunOverlay)" opacity=".12"/>
+      <defs>
+        <radialGradient id="sunOverlay" cx="75%" cy="15%" r="60%">
+          <stop offset="0%" stop-color="#FFD700"/>
+          <stop offset="100%" stop-color="transparent"/>
+        </radialGradient>
+      </defs>
+
+    </svg>
+
+    <!-- HOTSPOTS (positioned over the SVG) -->
+    <div class="hotspots">
+      <div class="hotspots-inner">
+        <a href="#" class="hotspot hs-shop" data-hover>
+          <div class="hs-ring"><div class="hs-pulse"></div></div>
+          <span class="hs-label">Shop</span>
+        </a>
+        <a href="#" class="hotspot hs-library" data-hover>
+          <div class="hs-ring"><div class="hs-pulse"></div></div>
+          <span class="hs-label">Webtoon</span>
+        </a>
+        <a href="#" class="hotspot hs-characters" data-hover>
+          <div class="hs-ring"><div class="hs-pulse"></div></div>
+          <span class="hs-label">Characters</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Particles -->
+  <canvas class="particles" id="particles"></canvas>
+  <div class="grain"></div>
+</div>
+
+<!-- Tagline -->
+<div class="tagline">A quiet plushie shop. ...It's fine.</div>
+
+<script>
+/* ══════ SPACE INTRO ══════ */
+const intro=document.getElementById('intro');
+const header=document.querySelector('.header');
+const hotspotsInner=document.querySelector('.hotspots-inner');
+const tagline=document.querySelector('.tagline');
+const introPlanet=document.getElementById('introPlanet');
+const introEnterBtn=document.getElementById('introEnterBtn');
+const introAtmo=document.getElementById('introAtmo');
+const introFlash=document.getElementById('introFlash');
+const warpCanvas=document.getElementById('warpCanvas');
+const warpCtx=warpCanvas.getContext('2d');
+let introOpened=false;
+
+// Resize warp canvas
+function resizeWarp(){warpCanvas.width=window.innerWidth;warpCanvas.height=window.innerHeight}
+resizeWarp();window.addEventListener('resize',resizeWarp);
+
+// Generate twinkling stars
+const starEls=[];
+(function generateStars(){
+  const container=document.getElementById('introStars');
+  for(let i=0;i<120;i++){
+    const star=document.createElement('div');
+    star.className='intro-star';
+    const size=Math.random()*2.5+0.5;
+    const lo=(.1+Math.random()*.2).toFixed(2);
+    const hi=(.5+Math.random()*.5).toFixed(2);
+    const top=Math.random()*100;
+    const left=Math.random()*100;
+    star.style.cssText=`
+      width:${size}px;height:${size}px;
+      top:${top}%;left:${left}%;
+      --lo:${lo};--hi:${hi};
+      --dur:${2+Math.random()*4}s;
+      --delay:${Math.random()*3}s;
+    `;
+    container.appendChild(star);
+    starEls.push({el:star,ox:left,oy:top,size});
+  }
+})();
+
+/* ─── Shu Shu full-screen orbit (JS-driven) ─── */
+const shushuEl=document.querySelector('.space-shushu');
+const shushuSvg=shushuEl?.querySelector('svg');
+let shushuAngle=0;
+let shushuTumble=0;
+(function animateShushuOrbit(){
+  if(!shushuEl)return;
+  const W=window.innerWidth,H=window.innerHeight;
+  // Elliptical orbit covering most of the screen
+  const cx=W*0.5, cy=H*0.45;
+  const rx=W*0.38, ry=H*0.34;
+  shushuAngle+=0.006;
+  // Tumble: continuous slow rotation with occasional faster spins
+  const spinCycle=shushuAngle%12.56; // ~2 full orbit loops
+  const spinBoost=spinCycle<2?2.5:spinCycle>8&&spinCycle<10?-1.8:0.6;
+  shushuTumble+=spinBoost*0.8;
+  const x=cx+Math.cos(shushuAngle)*rx + Math.sin(shushuAngle*0.7)*W*0.05;
+  const y=cy+Math.sin(shushuAngle)*ry + Math.cos(shushuAngle*0.5)*H*0.04;
+  const sc=1+Math.sin(shushuAngle*0.8)*0.06;
+  // Move the container (position)
+  shushuEl.style.transform=`translate(${x}px,${y}px)`;
+  // Tumble the SVG itself (full rotations)
+  shushuSvg.style.transform=`rotate(${shushuTumble}deg) scale(${sc})`;
+  requestAnimationFrame(animateShushuOrbit);
+})();
+
+/* ─── Warp star streak system ─── */
+class WarpStar{
+  constructor(cx,cy,w,h){
+    this.cx=cx;this.cy=cy;this.w=w;this.h=h;
+    this.reset();
+  }
+  reset(){
+    // Random position around center (but not too close)
+    const angle=Math.random()*Math.PI*2;
+    const dist=30+Math.random()*Math.max(this.w,this.h)*0.4;
+    this.x=this.cx+Math.cos(angle)*dist;
+    this.y=this.cy+Math.sin(angle)*dist;
+    this.z=Math.random()*1500+500;
+    this.pz=this.z;
+    this.brightness=Math.random()*0.5+0.5;
+  }
+  update(speed){
+    this.pz=this.z;
+    this.z-=speed;
+    if(this.z<1){this.reset();this.pz=this.z}
+  }
+  draw(ctx,cx,cy){
+    const sx=(this.x-cx)/this.z*400+cx;
+    const sy=(this.y-cy)/this.z*400+cy;
+    const px=(this.x-cx)/this.pz*400+cx;
+    const py=(this.y-cy)/this.pz*400+cy;
+    const size=Math.max(0,(1-this.z/2000)*3);
+    const alpha=Math.max(0,(1-this.z/2000)*this.brightness);
+    ctx.strokeStyle=`rgba(200,220,255,${alpha})`;
+    ctx.lineWidth=size;
+    ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(sx,sy);ctx.stroke();
+    // Bright head
+    ctx.fillStyle=`rgba(255,255,255,${alpha})`;
+    ctx.beginPath();ctx.arc(sx,sy,size*0.5,0,Math.PI*2);ctx.fill();
+  }
+}
+
+const warpStars=[];
+for(let i=0;i<200;i++){
+  warpStars.push(new WarpStar(
+    warpCanvas.width/2,warpCanvas.height*0.5,
+    warpCanvas.width,warpCanvas.height
+  ));
+}
+
+let warpActive=false;
+let warpSpeed=0;
+let warpTargetSpeed=0;
+
+function drawWarp(){
+  if(!warpActive&&warpSpeed<0.1)return requestAnimationFrame(drawWarp);
+  const cx=warpCanvas.width/2;
+  const cy=warpCanvas.height*0.5;
+  warpCtx.clearRect(0,0,warpCanvas.width,warpCanvas.height);
+  // Ease toward target speed
+  warpSpeed+=(warpTargetSpeed-warpSpeed)*0.06;
+  warpStars.forEach(s=>{
+    s.cx=cx;s.cy=cy;
+    s.update(warpSpeed);
+    s.draw(warpCtx,cx,cy);
+  });
+  requestAnimationFrame(drawWarp);
+}
+requestAnimationFrame(drawWarp);
+
+/* ─── Planet scale tracking ─── */
+let planetScale=1;
+
+/* ─── Scroll-driven zoom ─── */
+let scrollProgress=0; // 0 to 1
+const COMMIT_THRESHOLD=0.55; // auto-complete after this
+let committed=false;
+const zoomMeteors=document.getElementById('zoomMeteors');
+const introEnter=document.getElementById('introEnter');
+const introSpaceLogo=document.querySelector('.intro-space-logo');
+
+/* ─── Space Swimmer element ─── */
+const swimmer=document.getElementById('spaceSwimmer');
+
+function applyZoomProgress(p){
+  p=Math.max(0,Math.min(1,p));
+
+  // ── UI fade out (0→0.08) ──
+  const uiFade=Math.max(0,1-p/0.08);
+  introEnter.style.opacity=uiFade;
+  introSpaceLogo.style.opacity=uiFade;
+
+  // ── CSS stars fade (0→0.15) ──
+  starEls.forEach(s=>s.el.style.opacity=Math.max(0,1-p/0.15));
+
+  // ── Fade all space elements during scroll zoom ──
+  const spaceFade=Math.max(0,1-p/0.1);
+  if(shushuEl)shushuEl.style.opacity=spaceFade;
+  document.querySelectorAll('.intro-nebula,.space-dust,.intro-shooting').forEach(el=>el.style.opacity=spaceFade);
+
+  // ── Warp stars (gentle, accompanies swimmer journey) ──
+  warpActive=p>0.02&&p<0.75;
+  warpTargetSpeed=p<0.6?Math.min(1,p/0.3)*18:18*Math.max(0,(0.75-p)/0.15);
+
+  // ── Planet: gentle grow during journey, fast zoom after swimmer enters ──
+  const pScale=p<0.68?1+p*4:
+    1+0.68*4+Math.pow((p-0.68)/0.24,1.8)*30;
+  planetScale=pScale;
+  introPlanet.style.transform=`scale(${pScale})`;
+  if(p>0.01)introPlanet.style.animation='none';
+
+  // Planet opacity: visible throughout journey, fades during fast zoom
+  const pOpacity=p<0.68?1:p>0.88?0:1-((p-0.68)/0.2);
+  introPlanet.style.opacity=pOpacity;
+
+  // ── Planet glow (builds as swimmer approaches) ──
+  if(p>0.05&&p<0.8){
+    const gP=Math.min(1,(p-0.05)/0.3);
+    introPlanet.style.boxShadow=`inset -20px -15px 40px rgba(0,0,0,${0.4-gP*0.2}),0 0 ${60+gP*120}px rgba(120,180,240,${gP*0.35}),0 0 ${120+gP*200}px rgba(100,160,220,${gP*0.2})`;
+  }
+
+  // ── Atmosphere glow ──
+  introAtmo.style.opacity=(p<0.1?0:p>0.75?Math.max(0,1-(p-0.75)/0.1):Math.min(1,(p-0.1)/0.2))*0.5;
+
+  // ── Shooting stars ──
+  zoomMeteors.style.opacity=p<0.15?0:p>0.65?Math.max(0,1-(p-0.65)/0.1):Math.min(1,(p-0.15)/0.1);
+
+  // ── Warp canvas fades ──
+  if(p>0.65)warpCanvas.style.opacity=Math.max(0,1-(p-0.65)/0.12);
+
+  // ── SWIMMER (0.03→0.72): "You" NPC swims toward planet ──
+  if(p<0.03){
+    swimmer.style.opacity=0;
+  } else if(p<0.72){
+    const sp=(p-0.03)/0.69; // 0→1 swimmer progress
+    // Path: bottom-center → planet center (50%, 50%)
+    const sy=82-sp*36; // 82% → 46% (toward planet)
+    const sx=50+Math.sin(sp*Math.PI*3)*1.5; // gentle wobble
+    const sScale=1-sp*0.7; // 1 → 0.3 (shrinks into distance)
+    // Fade in quickly, stay visible, fade as reaching planet
+    const sOp=sp<0.06?sp/0.06:sp>0.85?Math.max(0,(1-sp)/0.15):1;
+    swimmer.style.left=sx+'%';
+    swimmer.style.top=sy+'%';
+    swimmer.style.transform=`translate(-50%,-50%) scale(${sScale})`;
+    swimmer.style.opacity=sOp;
+  } else {
+    swimmer.style.opacity=0;
+  }
+
+  // ── WHITE FLASH (0.90→1): Transition to town ──
+  const flashP=p<0.90?0:Math.min(1,(p-0.90)/0.10);
+  introFlash.style.opacity=flashP;
+}
+
+function commitZoom(){
+  if(committed)return;
+  committed=true;
+  intro.classList.add('zooming');
+  // Animate remaining progress to 1
+  const startP=scrollProgress;
+  const startTime=performance.now();
+  const duration=1200+(1-startP)*1000; // gentle pace through cloud layers
+  function tick(now){
+    const elapsed=now-startTime;
+    const t=Math.min(1,elapsed/duration);
+    const eased=1-Math.pow(1-t,3); // ease-out cubic
+    const p=startP+(1-startP)*eased;
+    applyZoomProgress(p);
+    if(t<1){
+      requestAnimationFrame(tick);
+    } else {
+      // Done — reveal town
+      introOpened=true;
+      warpActive=false;
+      warpTargetSpeed=0;
+      intro.classList.add('done');
+      header.classList.add('show');
+      hotspotsInner.classList.add('show');
+      tagline.classList.add('show');
+      setTimeout(()=>{intro.style.display='none'},1200);
+    }
+  }
+  requestAnimationFrame(tick);
+}
+
+// Wheel event drives zoom progress
+intro.addEventListener('wheel',(e)=>{
+  if(introOpened||committed)return;
+  e.preventDefault();
+  // Scroll down = positive = zoom in, scroll up = zoom out
+  const delta=e.deltaY>0?0.012:-0.015;
+  scrollProgress=Math.max(0,Math.min(1,scrollProgress+delta));
+  applyZoomProgress(scrollProgress);
+  // Commit if past threshold
+  if(scrollProgress>=COMMIT_THRESHOLD)commitZoom();
+},{passive:false});
+
+// Click planet / enter still works as instant commit
+function clickEnter(){
+  if(introOpened||committed)return;
+  scrollProgress=Math.max(scrollProgress,0.2);
+  applyZoomProgress(scrollProgress);
+  commitZoom();
+}
+introPlanet.addEventListener('click',clickEnter);
+introEnterBtn.addEventListener('click',clickEnter);
+introPlanet.addEventListener('touchend',(e)=>{e.preventDefault();clickEnter()});
+introEnterBtn.addEventListener('touchend',(e)=>{e.preventDefault();clickEnter()});
+document.addEventListener('keydown',(e)=>{if(e.key==='Enter'&&!introOpened)clickEnter()});
+
+// Touch scroll (mobile swipe up to zoom)
+let touchStartY=0;
+intro.addEventListener('touchstart',(e)=>{touchStartY=e.touches[0].clientY},{passive:true});
+intro.addEventListener('touchmove',(e)=>{
+  if(introOpened||committed)return;
+  e.preventDefault();
+  const dy=touchStartY-e.touches[0].clientY;
+  touchStartY=e.touches[0].clientY;
+  const delta=dy*0.002;
+  scrollProgress=Math.max(0,Math.min(1,scrollProgress+delta));
+  applyZoomProgress(scrollProgress);
+  if(scrollProgress>=COMMIT_THRESHOLD)commitZoom();
+},{passive:false});
+
+/* ══════ HAMBURGER MENU ══════ */
+const hamburgerBtn=document.getElementById('hamburgerBtn');
+const menuOverlay=document.getElementById('menuOverlay');
+const menuBackdrop=document.getElementById('menuBackdrop');
+
+function toggleMenu(){
+  const isOpen=menuOverlay.classList.contains('open');
+  menuOverlay.classList.toggle('open');
+  hamburgerBtn.classList.toggle('open');
+}
+hamburgerBtn.addEventListener('click',toggleMenu);
+menuBackdrop.addEventListener('click',toggleMenu);
+
+// Close menu when a link is clicked
+menuOverlay.querySelectorAll('.menu-link').forEach(link=>{
+  link.addEventListener('click',()=>{
+    menuOverlay.classList.remove('open');
+    hamburgerBtn.classList.remove('open');
+  });
+});
+
+// Close on Escape key
+document.addEventListener('keydown',(e)=>{
+  if(e.key==='Escape'&&menuOverlay.classList.contains('open'))toggleMenu();
+});
+
+/* ══════ WINDOW GLOW ANIMATION ══════ */
+(function animateGlow(){
+  const glows=document.querySelectorAll('.win-glow');
+  glows.forEach((g,i)=>{
+    const phase=i*1.2;
+    function tick(){
+      const t=Date.now()/1000;
+      const opacity=0.2+Math.sin(t*0.8+phase)*0.15;
+      g.setAttribute('opacity',opacity);
+      requestAnimationFrame(tick);
+    }
+    tick();
+  });
+})();
+
+/* ══════ KET TAIL SWAY ══════ */
+(function animateTail(){
+  const tail=document.querySelector('.ket-tail');
+  if(!tail)return;
+  function tick(){
+    const t=Date.now()/1000;
+    const angle=Math.sin(t*1.5)*10;
+    tail.setAttribute('transform',`rotate(${angle} 18 10)`);
+    requestAnimationFrame(tick);
+  }
+  tick();
+})();
+
+/* ══════ TUNI BOUNCE ══════ */
+(function animateTuni(){
+  const tuni=document.getElementById('charTuni');
+  if(!tuni)return;
+  const baseX=680,baseY=530;
+  function tick(){
+    const t=Date.now()/1000;
+    const y=Math.sin(t*2.5)*3;
+    const r=Math.sin(t*2)*2;
+    tuni.setAttribute('transform',`translate(${baseX},${baseY+y}) rotate(${r} 8 7)`);
+    requestAnimationFrame(tick);
+  }
+  tick();
+})();
+
+/* ══════ SHU SHU WOBBLE ══════ */
+(function animateShushu(){
+  const ss=document.getElementById('charShushu');
+  if(!ss)return;
+  const baseX=920,baseY=505;
+  function tick(){
+    const t=Date.now()/1000;
+    const y=Math.sin(t*2)*2;
+    const r=Math.sin(t*1.8)*3;
+    ss.setAttribute('transform',`translate(${baseX},${baseY+y}) rotate(${r} 8 6)`);
+    requestAnimationFrame(tick);
+  }
+  tick();
+})();
+
+/* ══════ DAWG PEEK ══════ */
+(function animateDawg(){
+  const dw=document.getElementById('charDawg');
+  if(!dw)return;
+  const baseX=1075,baseY=545;
+  function tick(){
+    const t=Date.now()/1000;
+    const x=Math.sin(t*0.5)*5+Math.sin(t*0.3)*3;
+    dw.setAttribute('transform',`translate(${baseX+x},${baseY})`);
+    requestAnimationFrame(tick);
+  }
+  tick();
+})();
+
+/* ══════ MOUSE CAMERA PAN on town ══════ */
+const townWrap=document.querySelector('.town-wrap');
+let mx=0.5,my=0.5,camX=0.5,camY=0.5;
+document.addEventListener('mousemove',(e)=>{
+  mx=e.clientX/window.innerWidth;
+  my=e.clientY/window.innerHeight;
+});
+(function parallaxTick(){
+  camX+=(mx-camX)*0.03;
+  camY+=(my-camY)*0.03;
+  // Pan range: 15% of viewport per side (town is 130%, 15% overflow each edge)
+  const panX=window.innerWidth*0.15;
+  const panY=window.innerHeight*0.15;
+  const ox=(camX-0.5)*-panX*2;
+  const oy=(camY-0.5)*-panY*2;
+  if(townWrap) townWrap.style.transform=`translate(${ox}px,${oy}px)`;
+  requestAnimationFrame(parallaxTick);
+})();
+
+/* ══════ PARTICLES (floating motes) ══════ */
+const canvas=document.getElementById('particles');
+const ctx=canvas.getContext('2d');
+let motes=[];
+function resizeC(){canvas.width=window.innerWidth;canvas.height=window.innerHeight}
+resizeC();window.addEventListener('resize',resizeC);
+
+class Mote{
+  constructor(){this.reset(true)}
+  reset(init){
+    this.x=Math.random()*canvas.width;
+    this.y=init?Math.random()*canvas.height:canvas.height+10;
+    this.size=Math.random()*2+.5;
+    this.speedY=-(Math.random()*.2+.04);
+    this.drift=(Math.random()-.5)*.12;
+    this.wobbleP=Math.random()*Math.PI*2;
+    this.wobbleS=Math.random()*.012+.004;
+    this.opacity=Math.random()*.3+.08;
+    this.growing=Math.random()>.5;
+    const pal=['#FFD700','#FFA040','#FEFCF8','#A8E06C','#f0f0e8'];
+    this.color=pal[Math.floor(Math.random()*pal.length)];
+  }
+  update(){
+    this.wobbleP+=this.wobbleS;
+    this.x+=this.drift+Math.sin(this.wobbleP)*.18;
+    this.y+=this.speedY;
+    if(this.growing){this.opacity+=.001;if(this.opacity>.4)this.growing=false}
+    else{this.opacity-=.001;if(this.opacity<.06)this.growing=true}
+    if(this.y<-10||this.x<-10||this.x>canvas.width+10)this.reset(false);
+  }
+  draw(){
+    ctx.save();ctx.globalAlpha=this.opacity;ctx.fillStyle=this.color;
+    ctx.shadowColor=this.color;ctx.shadowBlur=this.size*3;
+    ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);ctx.fill();ctx.restore();
+  }
+}
+for(let i=0;i<30;i++)motes.push(new Mote());
+(function drawMotes(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  motes.forEach(m=>{m.update();m.draw()});
+  requestAnimationFrame(drawMotes);
+})();
+
+/* ══════ HOTSPOT CLICKS ══════ */
+document.querySelectorAll('.hotspot').forEach(h=>{
+  h.addEventListener('click',e=>e.preventDefault());
+});
+
+/* ══════ TOUCH: tap to reveal ══════ */
+if('ontouchstart' in window){
+  document.querySelectorAll('.hotspot').forEach(h=>{
+    h.addEventListener('touchstart',function(){
+      document.querySelectorAll('.hotspot').forEach(x=>x!==this&&x.classList.remove('touch-active'));
+      this.classList.toggle('touch-active');
+    },{passive:true});
+  });
+}
+
+</script>
+</body>
+</html>
