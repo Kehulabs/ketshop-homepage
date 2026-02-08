@@ -1,0 +1,1788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Characters — Ketshop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&family=Gaegu:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════
+   DESIGN TOKENS
+   ══════════════════════════════════════════ */
+:root {
+  --font-display: 'Gaegu', cursive;
+  --font-body: 'Comfortaa', sans-serif;
+
+  --charcoal: #4A4A4A;
+  --ink: #4A4A4A;
+  --ink-soft: #6A6A6A;
+  --ink-light: #8A8A8A;
+  --white: #FEFCF8;
+  --cream: #FAF8F5;
+  --bg: #FAF8F5;
+  --bg-alt: #F5F2ED;
+
+  --ket-fur: #4A4A4A;
+  --ket-eyes: #A8E06C;
+  --tuni-body: #f0e0e8;
+  --tuni-badge: #E8B4B8;
+  --shushu-body: #f0dca0;
+  --shushu-helmet: #f5d040;
+  --dawg-fur: #8b7b6b;
+
+  --accent: #3D9970;
+  --glow: rgba(255, 220, 120, 0.4);
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.08);
+  --shadow-xl: 0 16px 48px rgba(0,0,0,0.12);
+
+  --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ══════════════════════════════════════════
+   RESET & BASE
+   ══════════════════════════════════════════ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--cream);
+  color: var(--charcoal);
+  overflow-x: hidden;
+  cursor: url('../knit-cursor.png') 4 4, auto;
+}
+
+*,*::before,*::after,a,button,[data-hover]{cursor:inherit}
+
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+img, video { display: block; max-width: 100%; }
+
+/* ══════════════════════════════════════════
+   HEADER (3-col: hamburger | logo | spacer)
+   — Exact match from homepage
+   ══════════════════════════════════════════ */
+.header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+  padding: 8px clamp(16px, 4vw, 40px);
+  pointer-events: none;
+}
+.header > * { pointer-events: auto; }
+.hdr-left { display: flex; align-items: center; }
+.hdr-center { display: flex; justify-content: center; }
+.hdr-right { display: flex; justify-content: flex-end; gap: 6px; }
+
+.hdr-logo {
+  display: flex; align-items: center; text-decoration: none;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.2));
+  transition: all .35s var(--ease-spring);
+}
+.hdr-logo:hover {
+  filter: drop-shadow(0 2px 12px rgba(0,0,0,0.15)) drop-shadow(0 0 18px rgba(168,224,108,0.25));
+  transform: translateY(-1px) scale(1.04);
+}
+.hdr-logo img { height: clamp(70px, 10vw, 100px); width: auto; }
+
+/* ══════════════════════════════════════════
+   HAMBURGER — Claw Scratch Icon
+   — Exact match from homepage
+   ══════════════════════════════════════════ */
+.hamburger {
+  width: 42px; height: 42px; border-radius: 50%; border: none;
+  background: rgba(255,255,255,0.5); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 0;
+  transition: all .3s var(--ease-spring);
+}
+.hamburger:hover { background: rgba(255,255,255,0.85); transform: scale(1.1); }
+.hamburger-icon { width: 24px; height: 20px; }
+
+/* Claw scratch lines — organic hand-scratched feel */
+.claw {
+  transition: all .4s var(--ease-spring);
+  transform-origin: 14px 11px;
+}
+/* Hover: scratches spread apart slightly + micro-wobble */
+.hamburger:not(.open):hover .claw-1 { transform: translateY(-1.5px) rotate(-2deg); }
+.hamburger:not(.open):hover .claw-2 { transform: scaleX(1.04); }
+.hamburger:not(.open):hover .claw-3 { transform: translateY(1.5px) rotate(2deg); }
+
+/* Open state: X formation */
+.hamburger.open .claw-1 { transform: translateY(6.5px) rotate(45deg); }
+.hamburger.open .claw-2 { opacity: 0; transform: scaleX(0); }
+.hamburger.open .claw-3 { transform: translateY(-6.5px) rotate(-45deg); }
+
+/* ══════════════════════════════════════════
+   SLIDE-OUT MENU — Plushie Panel
+   — Exact match from homepage
+   ══════════════════════════════════════════ */
+.menu-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  pointer-events: none; opacity: 0; transition: opacity .4s ease;
+}
+.menu-overlay.open { pointer-events: all; opacity: 1; }
+
+/* Backdrop — soft warm blur */
+.menu-backdrop {
+  position: absolute; inset: 0;
+  background: rgba(74,74,74,0.12);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  opacity: 0; transition: opacity .5s ease;
+}
+.menu-overlay.open .menu-backdrop { opacity: 1; }
+
+/* Panel — rounded plushie with stitching border */
+.menu-panel {
+  position: absolute; top: 18px; left: 16px; bottom: 18px;
+  width: clamp(250px, 42vw, 310px);
+  background: #FDF8F0;
+  border-radius: 26px;
+  border: 2.5px dashed rgba(180,160,140,0.3);
+  box-shadow:
+    0 12px 48px rgba(74,74,74,0.1),
+    0 2px 8px rgba(74,74,74,0.04),
+    inset 0 1px 0 rgba(255,255,255,0.8);
+  padding: 52px clamp(22px, 3vw, 32px) 28px;
+  transform: translateX(calc(-100% - 32px)) scale(0.96);
+  transition: transform .55s cubic-bezier(0.16, 1, 0.3, 1), opacity .4s ease;
+  opacity: 0;
+  display: flex; flex-direction: column;
+  overflow: visible;
+}
+.menu-overlay.open .menu-panel { transform: translateX(0) scale(1); opacity: 1; }
+
+/* Subtle dot-fabric pattern */
+.menu-panel::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: radial-gradient(circle, rgba(180,160,140,0.07) 1px, transparent 1px);
+  background-size: 14px 14px;
+  border-radius: 26px; pointer-events: none;
+}
+
+/* Menu nav */
+.menu-nav { display: flex; flex-direction: column; gap: 4px; flex: 1; padding-top: 8px; }
+
+/* Links — cozy pills with character-colored dot bullets */
+.menu-link {
+  display: flex; align-items: center; gap: 12px;
+  text-decoration: none; color: var(--charcoal);
+  font-family: var(--font-display); font-size: clamp(1.5rem, 2.8vw, 2rem); font-weight: 700;
+  padding: 13px 16px;
+  border-radius: 16px;
+  background: transparent;
+  opacity: 0; transform: translateX(-15px) scale(0.95);
+  transition: all .4s var(--ease-spring);
+}
+.menu-overlay.open .menu-link { opacity: 1; transform: translateX(0) scale(1); }
+.menu-overlay.open .menu-link:nth-child(1) { transition-delay: .18s; }
+.menu-overlay.open .menu-link:nth-child(2) { transition-delay: .24s; }
+.menu-overlay.open .menu-link:nth-child(3) { transition-delay: .30s; }
+.menu-overlay.open .menu-link:nth-child(4) { transition-delay: .36s; }
+.menu-overlay.open .menu-link:nth-child(5) { transition-delay: .42s; }
+
+/* Character-colored dot before each link */
+.menu-link::before {
+  content: ''; flex-shrink: 0;
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--dot, #A8E06C);
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.04);
+  transition: transform .3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.menu-link:nth-child(1) { --dot: #A8E06C; } /* Ket green — Home */
+.menu-link:nth-child(2) { --dot: #E8B4B8; } /* Tuni pink — Shop */
+.menu-link:nth-child(3) { --dot: #f5d040; } /* Shu Shu yellow — Webtoon */
+.menu-link:nth-child(4) { --dot: #7cc4e0; } /* Water blue — Characters */
+.menu-link:nth-child(5) { --dot: #8b7b6b; } /* Dawg brown — About */
+
+.menu-link:hover { background: color-mix(in srgb, var(--dot) 10%, transparent); transform: translateX(4px); }
+.menu-link:hover::before { transform: scale(1.5); box-shadow: 0 0 0 3px color-mix(in srgb, var(--dot) 18%, transparent); }
+.menu-link svg { display: none; } /* dots replace icons */
+
+/* Active page indicator */
+.menu-link.active {
+  background: color-mix(in srgb, var(--dot) 8%, transparent);
+}
+.menu-link.active::before {
+  transform: scale(1.3);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--dot) 15%, transparent);
+}
+
+/* Menu footer — stitched divider */
+.menu-footer {
+  margin-top: auto; padding-top: 18px;
+  border-top: 2px dashed rgba(180,160,140,0.2);
+}
+.menu-footer p {
+  font-family: var(--font-display); font-size: 0.95rem; color: #aaa; line-height: 1.6;
+}
+.menu-socials { display: flex; gap: 8px; margin-top: 10px; }
+.menu-socials a {
+  width: 32px; height: 32px; border-radius: 12px;
+  background: rgba(200,185,170,0.12);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--charcoal); text-decoration: none; transition: all .3s;
+}
+.menu-socials a:hover { background: rgba(168,224,108,0.2); transform: scale(1.1) rotate(-3deg); }
+
+/* ══════════════════════════════════════════
+   GRAIN OVERLAY
+   ══════════════════════════════════════════ */
+.grain {
+  position: fixed; inset: 0; pointer-events: none; z-index: 55; opacity: .018;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 150px;
+}
+
+/* ══════════════════════════════════════════
+   HERO SECTION
+   ══════════════════════════════════════════ */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 500px;
+  max-height: 900px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Warm cozy background behind transparent video */
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 60%, rgba(240,220,160,0.25) 0%, transparent 60%),
+    radial-gradient(ellipse at 30% 40%, rgba(168,224,108,0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 50%, rgba(240,224,232,0.15) 0%, transparent 50%),
+    linear-gradient(180deg, #f0e8d8 0%, #e8dcc8 30%, #e0d4b8 60%, #d8ccb0 100%);
+}
+
+/* Looping video — full width, no background in the .mov */
+.hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  z-index: 1;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(0,0,0,0.05) 0%,
+    rgba(0,0,0,0) 25%,
+    rgba(0,0,0,0) 45%,
+    rgba(0,0,0,0.15) 65%,
+    rgba(40,35,30,0.55) 85%,
+    rgba(40,35,30,0.75) 100%
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 4;
+  text-align: center;
+  padding: 0 24px;
+  margin-top: auto;
+  margin-bottom: clamp(40px, 8vh, 80px);
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(52px, 9vw, 108px);
+  letter-spacing: 6px;
+  color: var(--white);
+  line-height: 1;
+  margin-bottom: 14px;
+  text-shadow:
+    0 2px 4px rgba(0,0,0,0.3),
+    0 4px 16px rgba(0,0,0,0.2),
+    0 0 60px rgba(255,220,120,0.15);
+  -webkit-text-stroke: 1px rgba(0,0,0,0.08);
+}
+
+.hero-subtitle {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: clamp(14px, 2vw, 19px);
+  color: rgba(255,255,255,0.85);
+  letter-spacing: 2px;
+  text-shadow:
+    0 1px 3px rgba(0,0,0,0.25),
+    0 2px 12px rgba(0,0,0,0.15);
+}
+
+
+/* ══════════════════════════════════════════
+   CHARACTER HOTSPOTS — Sewn Plushie Tags
+   Dashed borders = stitching thread.
+   Labels = solid sewn-on tags, always readable.
+   Thread connector links circle → tag.
+   ══════════════════════════════════════════ */
+.hero-hotspots {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.hero-hotspot {
+  position: absolute;
+  pointer-events: auto;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  opacity: 0;
+  animation: hotspotReveal .9s var(--ease-spring) forwards;
+  animation-delay: var(--reveal-delay, 0s);
+}
+
+@keyframes hotspotReveal {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.3); filter: blur(6px); }
+  to   { opacity: 1; transform: translate(-50%, -50%) scale(1); filter: blur(0); }
+}
+
+/* ── The dot — floating character ember ── */
+.hero-hotspot-ring {
+  position: relative;
+  width: clamp(40px, 5vw, 70px);
+  height: clamp(40px, 5vw, 70px);
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: scale .35s var(--ease-spring);
+  animation: hotspotFloat 5s ease-in-out infinite;
+  animation-delay: var(--float-delay, 0s);
+}
+
+@keyframes hotspotFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+/* The glowing dot */
+.hero-hotspot-ring::after {
+  content: '';
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--hotspot-dot, rgba(255,255,255,0.7));
+  box-shadow:
+    0 0 10px var(--hotspot-glow, rgba(255,255,255,0.4)),
+    0 0 24px var(--hotspot-glow-soft, rgba(255,255,255,0.15));
+  transition: scale .4s var(--ease-spring),
+              opacity .4s ease,
+              box-shadow .4s var(--ease-spring);
+  animation: dotBreathe 3s ease-in-out infinite;
+  animation-delay: var(--float-delay, 0s);
+}
+
+@keyframes dotBreathe {
+  0%, 100% { opacity: 0.4; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+/* ── Hover: dot brightens ── */
+.hero-hotspot:hover .hero-hotspot-ring {
+  scale: 1.1;
+  animation-play-state: paused;
+}
+
+.hero-hotspot:hover .hero-hotspot-ring::after {
+  scale: 1.5;
+  opacity: 1;
+  animation-play-state: paused;
+  box-shadow:
+    0 0 16px var(--hotspot-glow, rgba(255,255,255,0.6)),
+    0 0 36px var(--hotspot-glow-soft, rgba(255,255,255,0.25));
+}
+
+/* Click press */
+.hero-hotspot:active .hero-hotspot-ring {
+  scale: 0.9;
+  transition-duration: .08s;
+}
+
+/* Old elements — hidden */
+.hero-hotspot-pulse { display: none; }
+.hero-hotspot-ring span { display: none; }
+
+/* ── Thread connector — tiny line from dot to tag ── */
+.hero-hotspot-thread {
+  width: 1.5px;
+  height: 0;
+  background: var(--hotspot-stitch, rgba(255,255,255,0.3));
+  transition: height .3s var(--ease-spring);
+  flex-shrink: 0;
+}
+
+.hero-hotspot:hover .hero-hotspot-thread {
+  height: 8px;
+}
+
+/* ── Name tag — SOLID background, always readable ── */
+.hero-hotspot-label {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(15px, 1.8vw, 22px);
+  color: var(--white);
+  letter-spacing: 2px;
+  padding: 5px 20px 2px;
+  border-radius: var(--radius-full);
+  background: var(--hotspot-tag-bg, rgba(40,35,30,0.9));
+  border: 1.5px dashed var(--hotspot-tag-border, rgba(255,255,255,0.2));
+  opacity: 0;
+  transform: translateY(-6px) scale(0.85);
+  transition: all .4s var(--ease-spring);
+  white-space: nowrap;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  pointer-events: none;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+}
+
+.hero-hotspot:hover .hero-hotspot-label {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* ══════════════════════════════════════════
+   CHARACTER GRID
+   ══════════════════════════════════════════ */
+.characters-section {
+  position: relative;
+  padding: clamp(40px, 8vw, 80px) clamp(20px, 4vw, 60px);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: clamp(32px, 6vw, 56px);
+}
+
+.section-label {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--ink-light);
+  margin-bottom: 8px;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(32px, 5vw, 52px);
+  color: var(--charcoal);
+  line-height: 1.1;
+}
+
+.char-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: clamp(16px, 3vw, 28px);
+}
+
+/* ══════════════════════════════════════════
+   CHARACTER CARD
+   ══════════════════════════════════════════ */
+.char-card {
+  position: relative;
+  background: var(--white);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all .4s var(--ease-spring);
+  border: 1.5px solid rgba(0,0,0,0.04);
+}
+
+.char-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-xl);
+  border-color: rgba(0,0,0,0.06);
+}
+
+.char-card-img {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+}
+
+.char-card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .6s var(--ease-spring);
+}
+
+.char-card:hover .char-card-img img {
+  transform: scale(1.05);
+}
+
+/* Placeholder gradient per character */
+.char-card-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 64px;
+  transition: transform .6s var(--ease-spring);
+}
+
+.char-card:hover .char-card-placeholder { transform: scale(1.05); }
+
+.char-card-color {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+}
+
+.char-card-body {
+  padding: clamp(16px, 2vw, 24px);
+}
+
+.char-card-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(24px, 3vw, 32px);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.char-card-species {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-light);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 8px;
+}
+
+.char-card-hook {
+  font-family: var(--font-body);
+  font-size: clamp(13px, 1.5vw, 15px);
+  font-weight: 400;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+
+.char-card-arrow {
+  position: absolute;
+  bottom: clamp(16px, 2vw, 24px);
+  right: clamp(16px, 2vw, 24px);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .3s var(--ease-spring);
+}
+
+.char-card:hover .char-card-arrow {
+  background: rgba(0,0,0,0.08);
+  transform: translateX(3px);
+}
+
+.char-card-arrow svg {
+  width: 14px;
+  height: 14px;
+  color: var(--ink-light);
+}
+
+/* ══════════════════════════════════════════
+   MODAL BACKDROP
+   ══════════════════════════════════════════ */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: rgba(0,0,0,0.25);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 0;
+  visibility: hidden;
+  transition: all .4s var(--ease);
+}
+
+.modal-backdrop.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ══════════════════════════════════════════
+   MODAL
+   ══════════════════════════════════════════ */
+.modal {
+  position: fixed;
+  z-index: 600;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.92);
+  width: min(94vw, 1000px);
+  max-height: 90vh;
+  background: var(--white);
+  border-radius: 20px;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transition: all .45s var(--ease-spring);
+  box-shadow: 0 24px 80px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: row;
+}
+
+.modal.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .3s var(--ease-spring);
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+.modal-close:hover {
+  background: rgba(255,255,255,0.9);
+  transform: scale(1.1) rotate(90deg);
+}
+
+.modal-close svg {
+  width: 16px;
+  height: 16px;
+  color: var(--charcoal);
+}
+
+/* ── LEFT: Gallery — vertical thumbs + 9:16 frame ── */
+.modal-gallery {
+  flex: 0 0 auto;
+  background: var(--bg-alt);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  overflow: hidden;
+  padding: clamp(14px, 2vw, 24px);
+  gap: clamp(8px, 1vw, 14px);
+}
+
+/* Vertical thumbnail strip — left of frame */
+.gallery-thumbs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 2px;
+  overflow-y: auto;
+  overflow-x: visible;
+  flex-shrink: 0;
+  order: -1;
+  max-height: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,0,0,0.06) transparent;
+  align-items: center;
+}
+
+.gallery-thumbs::-webkit-scrollbar { width: 3px; }
+.gallery-thumbs::-webkit-scrollbar-track { background: transparent; }
+.gallery-thumbs::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.06); border-radius: 4px; }
+
+.gallery-thumb {
+  flex-shrink: 0;
+  width: 48px;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all .3s var(--ease-spring);
+  position: relative;
+  opacity: 0.5;
+}
+
+.gallery-thumb.active {
+  border-color: var(--charcoal);
+  opacity: 1;
+  transform: scale(1.06);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.gallery-thumb:hover:not(.active) {
+  opacity: 0.8;
+  border-color: rgba(0,0,0,0.12);
+}
+
+.gallery-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Placeholder thumbnail */
+.gallery-thumb-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--ink-light);
+}
+
+/* Video icon on thumb */
+.gallery-thumb-video::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.2);
+  border-radius: inherit;
+}
+
+.gallery-thumb-video::before {
+  content: '\25B6';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  font-size: 10px;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+
+/* The main frame — 3:4 to fit art assets */
+.gallery-main {
+  position: relative;
+  width: clamp(240px, 26vw, 340px);
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  flex-shrink: 0;
+  border-radius: var(--radius-xl);
+  background: var(--charcoal);
+  box-shadow:
+    0 8px 32px rgba(0,0,0,0.1),
+    0 2px 8px rgba(0,0,0,0.06),
+    inset 0 0 0 1px rgba(0,0,0,0.04);
+}
+
+.gallery-slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity .4s var(--ease), transform .4s var(--ease-spring);
+  transform: scale(0.96);
+}
+
+.gallery-slide.active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.gallery-slide img,
+.gallery-slide video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius-xl);
+}
+
+.gallery-slide video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #000;
+  border-radius: var(--radius-xl);
+}
+
+/* Placeholder for missing media */
+.gallery-slide-placeholder {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-xl);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: rgba(255,255,255,0.4);
+}
+
+.gallery-slide-placeholder svg {
+  width: 40px;
+  height: 40px;
+  opacity: 0.35;
+}
+
+.gallery-slide-placeholder span {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 0 20px;
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* Video indicator badge */
+.gallery-slide-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(6px);
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  z-index: 3;
+}
+
+.gallery-slide-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ff4040;
+  animation: livePulse 1.5s ease-in-out infinite;
+}
+
+@keyframes livePulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* Gallery nav — frosted glass arrows */
+.gallery-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .3s var(--ease-spring);
+  border: 1px solid rgba(0,0,0,0.06);
+  z-index: 3;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.gallery-nav:hover {
+  background: rgba(255,255,255,0.92);
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.gallery-nav svg {
+  width: 14px;
+  height: 14px;
+  color: var(--charcoal);
+}
+
+.gallery-prev { left: 8px; }
+.gallery-next { right: 8px; }
+
+/* ── RIGHT: Details ── */
+.modal-details {
+  flex: 1;
+  padding: clamp(24px, 3vw, 40px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,0,0,0.08) transparent;
+}
+
+.modal-details::-webkit-scrollbar { width: 4px; }
+.modal-details::-webkit-scrollbar-track { background: transparent; }
+.modal-details::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.08); border-radius: 4px; }
+
+.modal-char-color {
+  width: 32px;
+  height: 4px;
+  border-radius: 2px;
+  margin-bottom: 16px;
+}
+
+.modal-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(36px, 4vw, 48px);
+  color: var(--charcoal);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.modal-species {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-light);
+  margin-bottom: 16px;
+}
+
+.modal-hook {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(18px, 2vw, 22px);
+  color: var(--ink-soft);
+  line-height: 1.4;
+  margin-bottom: 24px;
+  padding-left: 16px;
+  border-left: 3px solid rgba(0,0,0,0.08);
+}
+
+.modal-divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(0,0,0,0.06);
+  margin: 20px 0;
+}
+
+.modal-section-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-light);
+  margin-bottom: 12px;
+}
+
+.modal-bio {
+  font-family: var(--font-body);
+  font-size: clamp(13px, 1.5vw, 15px);
+  line-height: 1.7;
+  color: var(--ink-soft);
+  margin-bottom: 24px;
+}
+
+/* Tags / Traits */
+.modal-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.modal-tag {
+  padding: 5px 14px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  border: 1.5px solid rgba(0,0,0,0.08);
+  color: var(--ink-soft);
+  background: rgba(0,0,0,0.02);
+  transition: all .3s var(--ease-spring);
+}
+
+.modal-tag:hover {
+  border-color: rgba(0,0,0,0.12);
+  transform: translateY(-1px);
+}
+
+/* Favorite Moments */
+.modal-gags {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.modal-gag {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-family: var(--font-body);
+  font-size: clamp(12px, 1.4vw, 14px);
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+.modal-gag-bullet {
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-top: 6px;
+}
+
+/* Relationships */
+.modal-relationships {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal-rel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  background: rgba(0,0,0,0.02);
+  transition: background .3s var(--ease);
+}
+
+.modal-rel:hover { background: rgba(0,0,0,0.04); }
+
+.modal-rel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.modal-rel-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--charcoal);
+  min-width: 60px;
+}
+
+.modal-rel-desc {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--ink-light);
+}
+
+/* ══════════════════════════════════════════
+   FOOTER
+   ══════════════════════════════════════════ */
+.page-footer {
+  text-align: center;
+  padding: clamp(32px, 6vw, 60px) 24px;
+  border-top: 1px solid rgba(0,0,0,0.04);
+}
+
+.footer-tagline {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(16px, 2vw, 20px);
+  color: var(--ink-light);
+  letter-spacing: 1px;
+}
+
+/* Paw accent */
+.footer-tagline::before {
+  content: '';
+  display: inline-block;
+  width: 16px; height: 16px;
+  margin-right: 8px;
+  vertical-align: middle;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cellipse cx='5.5' cy='5' rx='2.2' ry='2.8' transform='rotate(-10 5.5 5)' fill='%238A8A8A' opacity='.5'/%3E%3Cellipse cx='10' cy='3.5' rx='2' ry='2.6' fill='%238A8A8A' opacity='.5'/%3E%3Cellipse cx='14.5' cy='5' rx='2.2' ry='2.8' transform='rotate(10 14.5 5)' fill='%238A8A8A' opacity='.5'/%3E%3Cpath d='M10 9.5 C8 9,5.5 9,4.5 12 C4 14,5.5 16,7.5 17 C8.5 17.5,9.5 18,10 18 C10.5 18,11.5 17.5,12.5 17 C14.5 16,16 14,15.5 12 C14.5 9,12 9,10 9.5Z' fill='%238A8A8A' opacity='.5'/%3E%3C/svg%3E") no-repeat center/contain;
+  opacity: .6;
+}
+
+/* ══════════════════════════════════════════
+   ENTRANCE ANIMATIONS
+   ══════════════════════════════════════════ */
+.fade-up {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .6s var(--ease), transform .6s var(--ease-spring);
+}
+
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ══════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .hero { max-height: 70vh; min-height: 400px; }
+
+  .hero-hotspots { display: none; }
+
+  .char-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .char-card-hook { display: none; }
+  .char-card-arrow { display: none; }
+  .char-card-body { padding: 12px 14px; }
+  .char-card-name { font-size: 20px; }
+
+  .modal {
+    flex-direction: column;
+    width: 96vw;
+    max-height: 92vh;
+    border-radius: 16px;
+  }
+
+  .modal-gallery {
+    flex: 0 0 auto;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    padding: 14px 14px 8px;
+    gap: 8px;
+  }
+
+  .gallery-thumbs {
+    flex-direction: row;
+    overflow-y: visible;
+    overflow-x: auto;
+    order: 0;
+    max-height: none;
+    justify-content: center;
+  }
+
+  .gallery-thumbs::-webkit-scrollbar { width: auto; height: 3px; }
+
+  .gallery-thumb {
+    width: 36px;
+    aspect-ratio: 1;
+  }
+
+  .gallery-main {
+    width: min(240px, 55vw);
+    max-height: 40vh;
+  }
+
+  .modal-details {
+    padding: 20px;
+  }
+
+  .modal-name { font-size: 32px; }
+  .modal-hook { font-size: 16px; }
+
+  .gallery-nav { width: 28px; height: 28px; }
+  .gallery-nav svg { width: 12px; height: 12px; }
+  .gallery-prev { left: 6px; }
+  .gallery-next { right: 6px; }
+}
+
+@media (max-width: 480px) {
+  .char-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .char-card-name { font-size: 18px; }
+  .hero-title { font-size: 40px; letter-spacing: 2px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ HEADER — Exact homepage match ═══════════════ -->
+<header class="header">
+  <!-- Left: Hamburger -->
+  <div class="hdr-left">
+    <button class="hamburger" id="hamburgerBtn" data-hover aria-label="Menu">
+      <svg class="hamburger-icon" viewBox="0 0 28 22" fill="none">
+        <!-- Organic claw scratches — tapered strokes with slight wobble -->
+        <path class="claw claw-1" d="M4 4.2 C6 3 9.5 2.3 14 3.2 C18.5 4.1 22 3.5 24.5 2.8" stroke="#4A4A4A" stroke-width="2.6" stroke-linecap="round" style="filter:url(#claw-rough)"/>
+        <path class="claw claw-2" d="M5.5 10.5 C8 9.4 11 9 14 10 C17 11 20.5 10.2 23 9.5" stroke="#4A4A4A" stroke-width="2.2" stroke-linecap="round" style="filter:url(#claw-rough)"/>
+        <path class="claw claw-3" d="M4 17 C6.5 16 10 15.5 14 16.5 C18 17.5 21.5 16.8 24.5 16" stroke="#4A4A4A" stroke-width="2.8" stroke-linecap="round" style="filter:url(#claw-rough)"/>
+        <defs>
+          <filter id="claw-rough" x="-5%" y="-20%" width="110%" height="140%">
+            <feTurbulence type="turbulence" baseFrequency="0.35" numOctaves="2" result="noise" seed="3"/>
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.2" xChannelSelector="R" yChannelSelector="G"/>
+          </filter>
+        </defs>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Center: Logo -->
+  <div class="hdr-center">
+    <a href="../" class="hdr-logo" data-hover>
+      <img src="../ketshop-logo.png" alt="Ketshop" draggable="false">
+    </a>
+  </div>
+
+  <div class="hdr-right"></div>
+</header>
+
+<!-- ═══════════════ SLIDE-OUT MENU — Exact homepage match ═══════════════ -->
+<div class="menu-overlay" id="menuOverlay">
+  <div class="menu-backdrop" id="menuBackdrop"></div>
+  <div class="menu-panel">
+    <nav class="menu-nav">
+      <a href="../" class="menu-link" data-hover>Home</a>
+      <a href="https://shop.kehu.world" target="_blank" rel="noopener" class="menu-link" data-hover>Shop</a>
+      <a href="https://www.webtoons.com/en/canvas/ketshop/list?title_no=1107623" target="_blank" rel="noopener" class="menu-link" data-hover>Webtoon</a>
+      <a href="./" class="menu-link active" data-hover>Characters</a>
+      <a href="#" class="menu-link" data-hover>About Us</a>
+    </nav>
+    <div class="menu-footer">
+      <p>...Thanks for visiting.</p>
+      <div class="menu-socials">
+        <a href="#" data-hover aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/></svg>
+        </a>
+        <a href="https://www.tiktok.com/@ketshopworld" target="_blank" rel="noopener" data-hover aria-label="TikTok">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
+        </a>
+        <a href="https://discord.com/invite/kehu" target="_blank" rel="noopener" data-hover aria-label="Discord">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M8.12 9.37C8.82 9.37 9.39 9.97 9.38 10.71C9.38 11.45 8.82 12.05 8.12 12.05C7.43 12.05 6.87 11.45 6.87 10.71C6.87 9.97 7.42 9.37 8.12 9.37Z"/><path d="M15.92 9.37C16.62 9.37 17.18 9.97 17.18 10.71C17.18 11.45 16.62 12.05 15.92 12.05C15.23 12.05 14.67 11.45 14.67 10.71C14.67 9.97 15.22 9.37 15.92 9.37Z"/><path d="M9.3 15.5C10.1 16.5 11.2 17 12 17C12.8 17 13.9 16.5 14.7 15.5"/><path d="M20 7.5C18.5 6.5 16.8 6 15.5 6L15 7C15 7 13.6 6.7 12 6.7C10.4 6.7 9 7 9 7L8.5 6C7.2 6 5.5 6.5 4 7.5C4 7.5 2 11 2 15.5C3.5 17.5 6 18 6 18L7 16.5C7 16.5 8.5 17 12 17C15.5 17 17 16.5 17 16.5L18 18C18 18 20.5 17.5 22 15.5C22 11 20 7.5 20 7.5Z"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Grain overlay -->
+<div class="grain"></div>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero" id="hero">
+  <!-- Warm background behind the transparent video -->
+  <div class="hero-bg"></div>
+  <!-- Looping idle animation -->
+  <video class="hero-video" autoplay loop muted playsinline>
+    <source src="idle.mov" type="video/quicktime">
+    <source src="idle.mov" type="video/mp4">
+  </video>
+
+  <div class="hero-overlay"></div>
+
+  <!-- Hotspots over the GIF (positioned per character in the scene) -->
+  <div class="hero-hotspots" id="heroHotspots"></div>
+
+  <div class="hero-content"></div>
+
+</section>
+
+<!-- ═══════════════ CHARACTER GRID ═══════════════ -->
+<section class="characters-section" id="characters">
+  <div class="section-header fade-up">
+    <span class="section-label">Meet everyone</span>
+    <h2 class="section-title">The Ketshop Family</h2>
+  </div>
+  <div class="char-grid" id="charGrid"></div>
+</section>
+
+<!-- ═══════════════ MODAL ═══════════════ -->
+<div class="modal-backdrop" id="modalBackdrop"></div>
+<div class="modal" id="modal" role="dialog" aria-modal="true">
+  <button class="modal-close" id="modalClose" aria-label="Close">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+  </button>
+
+  <!-- LEFT: Gallery -->
+  <div class="modal-gallery">
+    <div class="gallery-main" id="galleryMain"></div>
+    <div class="gallery-thumbs" id="galleryThumbs"></div>
+  </div>
+
+  <!-- RIGHT: Details -->
+  <div class="modal-details" id="modalDetails"></div>
+</div>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer class="page-footer">
+  <p class="footer-tagline">Welcome to the shop. You're one of us.</p>
+</footer>
+
+<script>
+/* ══════════════════════════════════════════════════
+   CHARACTER DATA
+   ──────────────────────────────────────────────────
+   Edit this single object to update all content.
+   Each character entry controls their card, modal,
+   gallery, and hero hotspot.
+   ══════════════════════════════════════════════════ */
+const CHARACTERS = [
+  {
+    id: 'ket',
+    name: 'Ket',
+    species: 'Cat',
+    color: '#4A4A4A',
+    colorLight: '#A8E06C',
+    emoji: '\u{1F431}',
+    hook: '"..." \u2014 The quietest shop owner with the loudest inner monologue.',
+    bio: 'A stoic grey cat and former underworld enforcer who left it all behind to run a small plushie shop. Ket says almost nothing, sighs constantly, and shows affection only through perfectly-crafted plushies and carefully-timed cups of coffee. Beneath the deadpan exterior lives a catastrophically anxious, deeply sentimental softie.',
+    traits: ['Stoic', 'Deadpan', 'Secret softie', 'Master craftsman', 'Chronic sigher', 'Quietly dramatic'],
+    gags: [
+      'That time his inner monologue went full meltdown while his face stayed completely blank',
+      'Silently sliding coffee to Tuni at exactly the right moment',
+      'Winning the cooking competition without even knowing he entered',
+      'The legendary "..." that somehow said everything'
+    ],
+    relationships: [
+      { name: 'Tuni', color: '#E8B4B8', desc: 'Quiet guardian \u2014 will never say it, but she\'s the reason he stays' },
+      { name: 'Shu Shu', color: '#f5d040', desc: 'Tolerates. Relies on more than he\'d admit.' },
+      { name: 'Dawg', color: '#8b7b6b', desc: 'Does not acknowledge the rivalry. At all.' }
+    ],
+    hotspot: { left: '44%', top: '44%' },
+    cardImg: null,
+    gallery: [
+      { type: 'image', src: 'img/ket/14-7.jpg', thumb: 'img/ket/14-7.jpg', alt: 'Ket at the café' },
+      { type: 'image', src: 'img/ket/13-8.jpg', thumb: 'img/ket/13-8.jpg', alt: 'Ket in the snow arc' },
+      { type: 'image', src: 'img/ket/23-19.jpg', thumb: 'img/ket/23-19.jpg', alt: 'Ket inner monologue' },
+      { type: 'image', src: 'img/ket/23-14.jpg', thumb: 'img/ket/23-14.jpg', alt: 'Ket on stage' },
+    ]
+  },
+  {
+    id: 'tuni',
+    name: 'Tuni',
+    species: 'Bunny',
+    color: '#E8B4B8',
+    colorLight: '#f0e0e8',
+    emoji: '\u{1F430}',
+    hook: '"MASTER KET\u2014!" \u2014 The most devoted disciple a cat never asked for.',
+    bio: 'A pink-and-white bunny who was once a matchstick-selling orphan, nearly frozen on the streets until Ket silently saved her. Since that day, Tuni has dedicated her entire existence to documenting, worshipping, and dramatically misinterpreting everything Ket does. Her devotion is played for comedy, but it\'s 100% real.',
+    traits: ['Loud', 'Dramatic', 'Fiercely loyal', 'Over-interpretive', 'Emotional powerhouse', 'Carries her plushie everywhere'],
+    gags: [
+      'The first time she screamed "MASTER KET\u2014!" and the whole shop went silent',
+      'Writing down Ket making tea as if it were divine scripture',
+      'Launching Dawg into orbit mid-sentence without breaking eye contact',
+      'When the dramatic lighting kicked in during her Ketism sermon'
+    ],
+    relationships: [
+      { name: 'Ket', color: '#A8E06C', desc: 'Absolute devotion. He is her world. She is his loudest migraine and softest spot.' },
+      { name: 'Shu Shu', color: '#f5d040', desc: 'Enables the chaos. Shu Shu listens but doesn\'t process.' },
+      { name: 'Dawg', color: '#8b7b6b', desc: 'On sight. No hesitation. Immediate violence.' }
+    ],
+    hotspot: { left: '30%', top: '48%' },
+    cardImg: null,
+    gallery: [
+      { type: 'image', src: 'img/tuni/3.jpg', thumb: 'img/tuni/3.jpg', alt: 'Tuni introduction' },
+      { type: 'image', src: 'img/tuni/2-5.jpg', thumb: 'img/tuni/2-5.jpg', alt: 'Tuni with her plushie' },
+      { type: 'image', src: 'img/tuni/13-7.jpg', thumb: 'img/tuni/13-7.jpg', alt: 'Tuni in the snow arc' },
+      { type: 'image', src: 'img/tuni/23-17.jpg', thumb: 'img/tuni/23-17.jpg', alt: 'Tuni on stage' },
+    ]
+  },
+  {
+    id: 'shushu',
+    name: 'Shu Shu',
+    species: 'Hamster',
+    color: '#f5d040',
+    colorLight: '#f0dca0',
+    emoji: '\u{1F439}',
+    hook: 'He dies. He comes back. He has deliveries to make.',
+    bio: 'A tiny, round hamster in a yellow helmet and blue overalls who works as Ketshop\'s delivery runner. Shu Shu is pure ADHD energy \u2014 always running, always on a mission, always accidentally dying in absurd ways. Everyone treats his frequent deaths with total casualness. He always comes back. He always has a package.',
+    traits: ['Hyperactive', 'Immortal (technically)', 'One-track mind', 'Innocent', 'Loves Milo', 'Unstoppable momentum'],
+    gags: [
+      'Finishing a delivery sentence after coming back from the dead',
+      'The entire dangerous delivery arc where he died six times and still delivered on time',
+      'Getting reincarnated into five different worlds in one episode',
+      'Zooming through town so fast he left a dust cloud shaped like himself'
+    ],
+    relationships: [
+      { name: 'Ket', color: '#A8E06C', desc: 'Quiet mutual understanding. Ket hands him cocoa without being asked.' },
+      { name: 'Tuni', color: '#E8B4B8', desc: 'Listens attentively, processes nothing. Still supportive.' },
+      { name: 'Dawg', color: '#8b7b6b', desc: 'Genuinely confused by this man.' }
+    ],
+    hotspot: { left: '69%', top: '67%' },
+    cardImg: null,
+    gallery: [
+      { type: 'image', src: 'img/shushu/chapter12.jpg', thumb: 'img/shushu/chapter12.jpg', alt: 'Shu Shu delivery intro' },
+      { type: 'image', src: 'img/shushu/9-13.jpg', thumb: 'img/shushu/9-13.jpg', alt: 'Shu Shu blur moment' },
+      { type: 'image', src: 'img/shushu/19-2.jpg', thumb: 'img/shushu/19-2.jpg', alt: 'Shu Shu isekai moment' },
+      { type: 'image', src: 'img/shushu/23-9.jpg', thumb: 'img/shushu/23-9.jpg', alt: 'Shu Shu on stage' },
+    ]
+  },
+  {
+    id: 'dawg',
+    name: 'Dawg',
+    species: 'Dog',
+    color: '#8b7b6b',
+    colorLight: '#a89888',
+    emoji: '\u{1F436}',
+    hook: 'He keeps showing up. Nobody asked him to. He won\'t stop.',
+    bio: 'A muscular, sunglasses-wearing dog still deep in gang life who considers Ket his ultimate rival. The problem? Ket doesn\'t acknowledge the rivalry at all. Dawg is loud, competitive, and surprisingly insecure underneath the tough-guy act. He dramatically removes his sunglasses to reveal... soft puppy eyes. Every single time.',
+    traits: ['Loud', 'Competitive', 'Insecure', 'Dumb-smart', 'Secretly admires Ket', 'Dramatic entrances'],
+    gags: [
+      'The dramatic sunglasses removal that revealed the softest puppy eyes imaginable',
+      'Delivering a whole passionate monologue to an empty room because Ket already left',
+      'Getting punched into the sky by Tuni before he could finish a single sentence',
+      'Accidentally admitting he thinks Ket is cool while trying to trash talk'
+    ],
+    relationships: [
+      { name: 'Ket', color: '#A8E06C', desc: 'ONE-SIDED rivalry. Ket is completely neutral. This drives Dawg insane.' },
+      { name: 'Tuni', color: '#E8B4B8', desc: 'His primary threat. She does not hold back.' },
+      { name: 'Shu Shu', color: '#f5d040', desc: 'Confused by. Cannot intimidate. Gives up.' }
+    ],
+    hotspot: { left: '65%', top: '28%' },
+    cardImg: null,
+    gallery: [
+      { type: 'image', src: 'img/dawg/chapter7.jpg', thumb: 'img/dawg/chapter7.jpg', alt: 'Dawg introduction' },
+      { type: 'image', src: 'img/dawg/11-4.jpg', thumb: 'img/dawg/11-4.jpg', alt: 'Dawg at the café' },
+      { type: 'image', src: 'img/dawg/15-7.jpg', thumb: 'img/dawg/15-7.jpg', alt: 'Dawg tumbler scene' },
+      { type: 'image', src: 'img/dawg/23-13.jpg', thumb: 'img/dawg/23-13.jpg', alt: 'Dawg on stage' },
+    ]
+  }
+];
+
+
+/* ══════════════════════════════════════════
+   RENDER
+   ══════════════════════════════════════════ */
+const $ = (s, p) => (p || document).querySelector(s);
+const $$ = (s, p) => [...(p || document).querySelectorAll(s)];
+
+// ── Build character cards ──
+function renderCards() {
+  const grid = $('#charGrid');
+  grid.innerHTML = CHARACTERS.map((c, i) => `
+    <article class="char-card fade-up" data-index="${i}" style="transition-delay:${i * 80}ms">
+      <div class="char-card-img">
+        ${(c.cardImg || c.gallery[0]?.src)
+          ? `<img src="${c.cardImg || c.gallery[0].src}" alt="${c.name}">`
+          : `<div class="char-card-placeholder" style="background:linear-gradient(135deg, ${c.colorLight}40, ${c.color}25)">${c.emoji}</div>`
+        }
+        <div class="char-card-color" style="background:${c.color}"></div>
+      </div>
+      <div class="char-card-body">
+        <h3 class="char-card-name" style="color:${c.color}">${c.name}</h3>
+        <p class="char-card-species">${c.species}</p>
+        <p class="char-card-hook">${c.hook.replace(/^"/, '').replace(/".*$/, '')}</p>
+      </div>
+      <div class="char-card-arrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+      </div>
+    </article>
+  `).join('');
+
+  $$('.char-card', grid).forEach(card => {
+    card.addEventListener('click', () => openModal(+card.dataset.index));
+  });
+}
+
+// ── Build hero hotspots ──
+function renderHotspots() {
+  const container = $('#heroHotspots');
+  container.innerHTML = CHARACTERS.map((c, i) => {
+    const hex = c.colorLight || c.color;
+    const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+    // Tag bg: use the primary (darker) color for more saturation
+    const tHex = c.color;
+    const cR = parseInt(tHex.slice(1,3),16), cG = parseInt(tHex.slice(3,5),16), cB = parseInt(tHex.slice(5,7),16);
+    // Blend primary color (45%) with warm dark (55%) for readable but tinted tag
+    const tR = Math.round(cR * 0.45 + 32 * 0.55);
+    const tG = Math.round(cG * 0.45 + 28 * 0.55);
+    const tB = Math.round(cB * 0.45 + 26 * 0.55);
+    return `
+    <button class="hero-hotspot" data-index="${i}" style="
+      left:${c.hotspot.left}; top:${c.hotspot.top};
+      --reveal-delay: ${0.5 + i * 0.18}s;
+      --float-delay: ${i * 0.8}s;
+      --hotspot-bg: rgba(${r},${g},${b},0.06);
+      --hotspot-bg-hover: rgba(${r},${g},${b},0.12);
+      --hotspot-glow: rgba(${r},${g},${b},0.4);
+      --hotspot-glow-soft: rgba(${r},${g},${b},0.15);
+      --hotspot-dot: rgba(${r},${g},${b},0.9);
+      --hotspot-stitch: rgba(${r},${g},${b},0.28);
+      --hotspot-border-hover: rgba(${r},${g},${b},0.5);
+      --hotspot-shadow: rgba(${r},${g},${b},0.25);
+      --hotspot-tag-bg: rgba(${tR},${tG},${tB},0.93);
+      --hotspot-tag-border: rgba(${r},${g},${b},0.35);
+    ">
+      <div class="hero-hotspot-ring">
+        <div class="hero-hotspot-pulse"></div>
+        <span>${c.emoji}</span>
+      </div>
+      <div class="hero-hotspot-thread"></div>
+      <span class="hero-hotspot-label">${c.name}</span>
+    </button>`;
+  }).join('');
+
+  $$('.hero-hotspot', container).forEach(btn => {
+    btn.addEventListener('click', () => openModal(+btn.dataset.index));
+  });
+}
+
+
+/* ══════════════════════════════════════════
+   HAMBURGER MENU — Exact homepage logic
+   ══════════════════════════════════════════ */
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const menuOverlay = document.getElementById('menuOverlay');
+const menuBackdrop = document.getElementById('menuBackdrop');
+
+function toggleMenu() {
+  menuOverlay.classList.toggle('open');
+  hamburgerBtn.classList.toggle('open');
+}
+hamburgerBtn.addEventListener('click', toggleMenu);
+menuBackdrop.addEventListener('click', toggleMenu);
+
+// Close menu when a link is clicked
+menuOverlay.querySelectorAll('.menu-link').forEach(link => {
+  link.addEventListener('click', () => {
+    menuOverlay.classList.remove('open');
+    hamburgerBtn.classList.remove('open');
+  });
+});
+
+
+/* ══════════════════════════════════════════
+   MODAL
+   ══════════════════════════════════════════ */
+let currentChar = null;
+let currentSlide = 0;
+
+function openModal(index) {
+  currentChar = CHARACTERS[index];
+  currentSlide = 0;
+  renderGallery();
+  renderDetails();
+  $('#modalBackdrop').classList.add('active');
+  $('#modal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  $('#modalBackdrop').classList.remove('active');
+  $('#modal').classList.remove('active');
+  document.body.style.overflow = '';
+  $$('video', $('#galleryMain')).forEach(v => v.pause());
+  currentChar = null;
+}
+
+function renderGallery() {
+  const c = currentChar;
+  const main = $('#galleryMain');
+  const thumbs = $('#galleryThumbs');
+
+  main.innerHTML = c.gallery.map((item, i) => {
+    const isActive = i === currentSlide ? ' active' : '';
+    if (item.type === 'video') {
+      return `
+        <div class="gallery-slide${isActive}" data-index="${i}">
+          ${item.src
+            ? `<video src="${item.src}" controls playsinline preload="metadata"></video>`
+            : `<div class="gallery-slide-placeholder" style="background:linear-gradient(135deg, ${c.colorLight}30, ${c.color}15)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                <span>${item.alt}</span>
+              </div>`
+          }
+          <div class="gallery-slide-badge">LIVE</div>
+        </div>`;
+    } else {
+      return `
+        <div class="gallery-slide${isActive}" data-index="${i}">
+          ${item.src
+            ? `<img src="${item.src}" alt="${item.alt}">`
+            : `<div class="gallery-slide-placeholder" style="background:linear-gradient(135deg, ${c.colorLight}30, ${c.color}15)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                <span>${item.alt}</span>
+              </div>`
+          }
+        </div>`;
+    }
+  }).join('') + `
+    <button class="gallery-nav gallery-prev" aria-label="Previous">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <button class="gallery-nav gallery-next" aria-label="Next">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  `;
+
+  thumbs.innerHTML = c.gallery.map((item, i) => {
+    const activeClass = i === currentSlide ? ' active' : '';
+    const videoClass = item.type === 'video' ? ' gallery-thumb-video' : '';
+    return `
+      <button class="gallery-thumb${activeClass}${videoClass}" data-index="${i}" aria-label="${item.alt}">
+        ${item.thumb
+          ? `<img src="${item.thumb}" alt="${item.alt}">`
+          : `<div class="gallery-thumb-placeholder" style="background:linear-gradient(135deg, ${c.colorLight}50, ${c.color}30)">${item.type === 'video' ? '' : (i + 1)}</div>`
+        }
+      </button>
+    `;
+  }).join('');
+
+  $('.gallery-prev', main).addEventListener('click', () => goSlide(currentSlide - 1));
+  $('.gallery-next', main).addEventListener('click', () => goSlide(currentSlide + 1));
+  $$('.gallery-thumb', thumbs).forEach(t => {
+    t.addEventListener('click', () => goSlide(+t.dataset.index));
+  });
+}
+
+function goSlide(index) {
+  if (!currentChar) return;
+  const total = currentChar.gallery.length;
+  currentSlide = ((index % total) + total) % total;
+
+  $$('video', $('#galleryMain')).forEach(v => v.pause());
+
+  $$('.gallery-slide', $('#galleryMain')).forEach((s, i) => {
+    s.classList.toggle('active', i === currentSlide);
+  });
+  $$('.gallery-thumb', $('#galleryThumbs')).forEach((t, i) => {
+    t.classList.toggle('active', i === currentSlide);
+    if (i === currentSlide) t.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  });
+}
+
+function renderDetails() {
+  const c = currentChar;
+  const el = $('#modalDetails');
+
+  el.innerHTML = `
+    <div class="modal-char-color" style="background:${c.color}"></div>
+    <h2 class="modal-name" style="color:${c.color}">${c.name}</h2>
+    <p class="modal-species">${c.species}</p>
+    <p class="modal-hook">${c.hook}</p>
+
+    <div class="modal-divider"></div>
+
+    <h3 class="modal-section-title">About</h3>
+    <p class="modal-bio">${c.bio}</p>
+
+    <h3 class="modal-section-title">Traits</h3>
+    <div class="modal-tags">
+      ${c.traits.map(t => `<span class="modal-tag">${t}</span>`).join('')}
+    </div>
+
+    <h3 class="modal-section-title">Favorite Moments</h3>
+    <ul class="modal-gags">
+      ${c.gags.map(g => `
+        <li class="modal-gag">
+          <span class="modal-gag-bullet" style="background:${c.color}"></span>
+          ${g}
+        </li>
+      `).join('')}
+    </ul>
+
+    <div class="modal-divider"></div>
+
+    <h3 class="modal-section-title">Relationships</h3>
+    <div class="modal-relationships">
+      ${c.relationships.map(r => `
+        <div class="modal-rel">
+          <span class="modal-rel-dot" style="background:${r.color}"></span>
+          <span class="modal-rel-name">${r.name}</span>
+          <span class="modal-rel-desc">${r.desc}</span>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+
+/* ══════════════════════════════════════════
+   EVENTS
+   ══════════════════════════════════════════ */
+$('#modalBackdrop').addEventListener('click', closeModal);
+$('#modalClose').addEventListener('click', closeModal);
+
+// Escape key: close modal first, then menu
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    if (currentChar) { closeModal(); return; }
+    if (menuOverlay.classList.contains('open')) toggleMenu();
+  }
+});
+
+// Arrow keys for gallery
+document.addEventListener('keydown', e => {
+  if (!currentChar) return;
+  if (e.key === 'ArrowLeft') goSlide(currentSlide - 1);
+  if (e.key === 'ArrowRight') goSlide(currentSlide + 1);
+});
+
+// Touch swipe in gallery
+let touchStartX = 0;
+$('#galleryMain').addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+$('#galleryMain').addEventListener('touchend', e => {
+  if (!currentChar) return;
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  if (Math.abs(dx) > 40) goSlide(currentSlide + (dx < 0 ? 1 : -1));
+}, { passive: true });
+
+
+/* ══════════════════════════════════════════
+   INTERSECTION OBSERVER (fade-in)
+   ══════════════════════════════════════════ */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+
+/* ══════════════════════════════════════════
+   INIT
+   ══════════════════════════════════════════ */
+renderCards();
+renderHotspots();
+
+requestAnimationFrame(() => {
+  $$('.fade-up').forEach(el => observer.observe(el));
+});
+</script>
+</body>
+</html>

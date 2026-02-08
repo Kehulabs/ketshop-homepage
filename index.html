@@ -540,7 +540,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#5a9a5a;font-family:
 }
 
 /* ════════════ HOTSPOTS (overlaid on town) ════════════ */
-.hotspots{position:absolute;inset:0;pointer-events:none}
+.hotspots{position:absolute;inset:0;pointer-events:none;z-index:60}
 .hotspots-inner{
   position:relative;width:100%;height:100%;
 }
@@ -629,12 +629,172 @@ html,body{width:100%;height:100%;overflow:hidden;background:#5a9a5a;font-family:
 }
 .hotspot.touch-active .hs-label{opacity:1!important;transform:translateY(0)!important}
 
+/* ════════════ MOBILE LANDING — Shop Interior Scene ════════════ */
+.mobile-landing{
+  display:none;
+  position:fixed;inset:0;z-index:40;
+  flex-direction:column;
+  overflow:hidden;
+  opacity:0;transition:opacity .8s ease;
+}
+.mobile-landing.show{opacity:1}
+
+/* Shop interior background — warm cream wall with wood wainscoting */
+.ml-bg{
+  position:absolute;inset:0;
+  background:
+    linear-gradient(180deg,
+      #f5ede0 0%,        /* cream ceiling */
+      #f0e8d8 35%,       /* warm wall */
+      #e0d4be 36%,       /* wainscoting line */
+      #d4c4a0 38%,       /* wood panel top */
+      #c8b890 65%,       /* wood paneling */
+      #8a6a4a 65.5%,     /* counter top edge */
+      #9a7a5a 68%,       /* counter surface */
+      #7a5a3a 70%,       /* counter front */
+      #6a4a2a 100%       /* counter shadow */
+    );
+}
+
+/* Subtle wall texture */
+.ml-bg::before{
+  content:'';position:absolute;inset:0;
+  background-image:radial-gradient(circle,rgba(180,160,140,0.05) 1px,transparent 1px);
+  background-size:18px 18px;
+  pointer-events:none;
+}
+
+/* Warm hanging lamp glow */
+.ml-lamp{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:2px;height:clamp(40px,8vh,70px);
+  background:linear-gradient(180deg,transparent,#5a4a3a);
+}
+.ml-lamp::after{
+  content:'';position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);
+  width:28px;height:14px;
+  background:radial-gradient(ellipse,#f0e0c0,#d0b880);
+  border-radius:0 0 50% 50%;
+  box-shadow:0 8px 50px rgba(255,200,100,0.3),0 20px 80px rgba(255,180,80,0.15);
+}
+/* Lamp light cone on wall */
+.ml-glow{
+  position:absolute;top:clamp(50px,10vh,80px);left:50%;transform:translateX(-50%);
+  width:clamp(160px,50vw,240px);height:clamp(200px,40vh,300px);
+  background:radial-gradient(ellipse at 50% 0%,rgba(255,220,140,0.12),transparent 70%);
+  pointer-events:none;
+}
+
+/* Shelf behind Ket */
+.ml-shelf{
+  position:absolute;
+  top:clamp(60px,12vh,100px);
+  left:50%;transform:translateX(-50%);
+  width:clamp(160px,55vw,220px);height:8px;
+  background:linear-gradient(180deg,#a08060,#8a6a4a);
+  border-radius:2px;
+  box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+/* Mini plushie on shelf */
+.ml-plushie{position:absolute;bottom:6px;right:12px}
+
+/* ─── Ket behind counter ─── */
+.ml-ket{
+  position:absolute;
+  bottom:clamp(30%,34vh,38%);
+  left:50%;transform:translateX(-50%);
+  width:clamp(100px,28vw,140px);
+  filter:drop-shadow(0 4px 12px rgba(0,0,0,.1));
+  animation:ml-ket-idle 3s ease-in-out infinite;
+}
+@keyframes ml-ket-idle{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-2px)}}
+
+/* ─── Speech bubble (floats above Ket) ─── */
+.ml-dialogue{
+  position:absolute;
+  bottom:clamp(58%,62vh,68%);
+  left:50%;transform:translateX(-50%);
+  width:clamp(220px,72vw,300px);
+  background:#FAF8F5;
+  border-radius:18px;
+  padding:16px 20px;
+  border:2px dashed rgba(180,160,140,0.25);
+  box-shadow:0 4px 24px rgba(74,74,74,0.08);
+  opacity:0;animation:ml-bubble-in .6s ease-out .3s forwards;
+}
+@keyframes ml-bubble-in{from{opacity:0;transform:translateX(-50%) translateY(8px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+/* Speech tail */
+.ml-dialogue::after{
+  content:'';position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);
+  width:0;height:0;
+  border-left:8px solid transparent;border-right:8px solid transparent;
+  border-top:8px solid #FAF8F5;
+  filter:drop-shadow(0 1px 0 rgba(180,160,140,0.15));
+}
+.ml-dialogue__text{
+  font-family:var(--font-display);font-size:clamp(1.05rem,3.8vw,1.3rem);
+  font-weight:700;color:var(--charcoal);line-height:1.45;
+}
+.ml-dialogue__hint{
+  display:flex;align-items:center;gap:5px;
+  font-family:var(--font-body);font-size:clamp(0.65rem,2.2vw,0.78rem);
+  color:#aaa;margin-top:8px;
+}
+.ml-dialogue__arrow{
+  display:inline-block;
+  width:14px;height:14px;
+  opacity:.5;
+  animation:ml-point 1.5s ease-in-out infinite;
+}
+@keyframes ml-point{0%,100%{transform:translate(0,0)}50%{transform:translate(-3px,-2px)}}
+
+/* ─── Counter items (links as objects on the counter) ─── */
+.ml-counter{
+  position:absolute;
+  bottom:clamp(12%,16vh,22%);
+  left:50%;transform:translateX(-50%);
+  display:flex;gap:clamp(8px,3vw,14px);
+  opacity:0;animation:ml-items-in .5s ease-out .6s forwards;
+}
+@keyframes ml-items-in{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+.ml-counter__item{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  text-decoration:none;
+  padding:10px 12px 8px;
+  border-radius:12px;
+  background:rgba(250,248,245,0.85);
+  border:1.5px solid rgba(180,160,140,0.15);
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
+  transition:transform .2s ease,box-shadow .2s ease;
+  min-width:clamp(70px,22vw,90px);
+}
+.ml-counter__item:active{transform:scale(0.95);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.ml-counter__icon{
+  width:28px;height:28px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+}
+.ml-counter__icon--shop{background:rgba(74,74,74,0.1)}
+.ml-counter__icon--webtoon{background:rgba(61,153,112,0.1)}
+.ml-counter__icon--discord{background:rgba(88,101,242,0.1)}
+.ml-counter__icon svg{width:16px;height:16px}
+.ml-counter__label{
+  font-family:var(--font-display);font-size:clamp(0.7rem,2.5vw,0.85rem);
+  font-weight:700;color:var(--charcoal);letter-spacing:.5px;
+}
+
+/* ─── Bottom tagline ─── */
+.ml-footer{
+  position:absolute;bottom:clamp(10px,3vh,20px);left:50%;transform:translateX(-50%);
+  font-family:var(--font-display);font-size:clamp(0.7rem,2.2vw,0.85rem);
+  color:rgba(100,80,60,0.35);white-space:nowrap;letter-spacing:.5px;
+}
+
 /* ════════════ RESPONSIVE ════════════ */
 @media(max-width:768px){
-  .hs-ring{width:45px;height:45px}
-  .hs-shop{left:50%;top:38%}
-  .hs-library{left:16.5%;top:28%}
-  .hs-characters{left:74.5%;top:31%}
+  .world,.particles,.grain,.tagline,.hotspots{display:none!important}
+  .mobile-landing{display:flex}
 }
 html{position:fixed;width:100%}
 </style>
@@ -757,7 +917,7 @@ html{position:fixed;width:100%}
 
   <!-- Logo at top -->
   <div class="intro-space-logo">
-    <img src="White Ketshop Text Logo.png" alt="Ketshop" draggable="false">
+    <img src="ketshop-logo.png" alt="Ketshop" draggable="false">
   </div>
 
   <!-- Warp speed canvas -->
@@ -838,7 +998,7 @@ html{position:fixed;width:100%}
   <!-- Center: Logo -->
   <div class="hdr-center">
     <a href="#" class="hdr-logo" data-hover>
-      <img src="White Ketshop Text Logo.png" alt="Ketshop" draggable="false">
+      <img src="ketshop-logo.png" alt="Ketshop" draggable="false">
     </a>
   </div>
 
@@ -854,11 +1014,11 @@ html{position:fixed;width:100%}
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         Home
       </a>
-      <a href="#" class="menu-link" data-hover>
+      <a href="https://shop.kehu.world" target="_blank" rel="noopener" class="menu-link" data-hover>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
         Shop
       </a>
-      <a href="#" class="menu-link" data-hover>
+      <a href="https://www.webtoons.com/en/canvas/ketshop/list?title_no=1107623" target="_blank" rel="noopener" class="menu-link" data-hover>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/><line x1="6" y1="8" x2="6" y2="11"/><line x1="10" y1="7" x2="10" y2="11"/><line x1="14" y1="9" x2="14" y2="11"/><line x1="18" y1="6" x2="18" y2="11"/></svg>
         Webtoon
       </a>
@@ -873,8 +1033,11 @@ html{position:fixed;width:100%}
         <a href="#" data-hover aria-label="Instagram">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/></svg>
         </a>
-        <a href="#" data-hover aria-label="YouTube">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19.13C5.12 19.56 12 19.56 12 19.56s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.43z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48"/></svg>
+        <a href="https://www.tiktok.com/@ketshopworld" target="_blank" rel="noopener" data-hover aria-label="TikTok">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
+        </a>
+        <a href="https://discord.com/invite/kehu" target="_blank" rel="noopener" data-hover aria-label="Discord">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M8.12 9.37C8.82 9.37 9.39 9.97 9.38 10.71C9.38 11.45 8.82 12.05 8.12 12.05C7.43 12.05 6.87 11.45 6.87 10.71C6.87 9.97 7.42 9.37 8.12 9.37Z"/><path d="M15.92 9.37C16.62 9.37 17.18 9.97 17.18 10.71C17.18 11.45 16.62 12.05 15.92 12.05C15.23 12.05 14.67 11.45 14.67 10.71C14.67 9.97 15.22 9.37 15.92 9.37Z"/><path d="M9.3 15.5C10.1 16.5 11.2 17 12 17C12.8 17 13.9 16.5 14.7 15.5"/><path d="M20 7.5C18.5 6.5 16.8 6 15.5 6L15 7C15 7 13.6 6.7 12 6.7C10.4 6.7 9 7 9 7L8.5 6C7.2 6 5.5 6.5 4 7.5C4 7.5 2 11 2 15.5C3.5 17.5 6 18 6 18L7 16.5C7 16.5 8.5 17 12 17C15.5 17 17 16.5 17 16.5L18 18C18 18 20.5 17.5 22 15.5C22 11 20 7.5 20 7.5Z"/></svg>
         </a>
       </div>
     </div>
@@ -1336,11 +1499,11 @@ html{position:fixed;width:100%}
     <!-- HOTSPOTS (positioned over the SVG) -->
     <div class="hotspots">
       <div class="hotspots-inner">
-        <a href="#" class="hotspot hs-shop" data-hover>
+        <a href="https://shop.kehu.world" target="_blank" rel="noopener" class="hotspot hs-shop" data-hover>
           <div class="hs-ring"><div class="hs-pulse"></div></div>
           <span class="hs-label">Shop</span>
         </a>
-        <a href="#" class="hotspot hs-library" data-hover>
+        <a href="https://www.webtoons.com/en/canvas/ketshop/list?title_no=1107623" target="_blank" rel="noopener" class="hotspot hs-library" data-hover>
           <div class="hs-ring"><div class="hs-pulse"></div></div>
           <span class="hs-label">Webtoon</span>
         </a>
@@ -1357,8 +1520,124 @@ html{position:fixed;width:100%}
   <div class="grain"></div>
 </div>
 
+<!-- Mobile Landing (replaces town on phones) -->
+<div class="mobile-landing" id="mobileLanding">
+  <!-- Shop interior background -->
+  <div class="ml-bg"></div>
+  <div class="ml-glow"></div>
+  <div class="ml-lamp"></div>
+
+  <!-- Shelf with plushie -->
+  <div class="ml-shelf">
+    <svg class="ml-plushie" width="22" height="24" viewBox="0 0 22 24" fill="none">
+      <ellipse cx="11" cy="15" rx="9" ry="8" fill="#f0e0e8"/>
+      <circle cx="11" cy="10" r="7" fill="#f0e0e8"/>
+      <circle cx="8" cy="9" r="1.5" fill="#2a2a2a"/><circle cx="14" cy="9" r="1.5" fill="#2a2a2a"/>
+      <circle cx="7.5" cy="8.5" r=".5" fill="white"/>
+      <circle cx="13.5" cy="8.5" r=".5" fill="white"/>
+      <ellipse cx="11" cy="11.5" rx="1.2" ry=".8" fill="#d0909a"/>
+      <circle cx="4" cy="6" r="3" fill="#f0e0e8"/><circle cx="18" cy="6" r="3" fill="#f0e0e8"/>
+      <circle cx="4" cy="5.5" r="1.5" fill="#f5d0d8"/>
+      <circle cx="18" cy="5.5" r="1.5" fill="#f5d0d8"/>
+    </svg>
+  </div>
+
+  <!-- Ket behind counter (upper body, paws resting on counter) -->
+  <svg class="ml-ket" viewBox="0 0 120 120" fill="none">
+    <!-- Body (visible above counter) -->
+    <ellipse cx="60" cy="85" rx="26" ry="30" fill="#4A4A4A"/>
+    <!-- Apron -->
+    <ellipse cx="60" cy="92" rx="20" ry="22" fill="#8aab90" opacity=".7"/>
+    <rect x="48" y="72" width="24" height="5" rx="2" fill="#7a9b80" opacity=".5"/>
+    <!-- Apron pocket -->
+    <rect x="50" y="84" width="20" height="10" rx="3" fill="#7a9b80" opacity=".4"/>
+    <line x1="54" y1="87" x2="66" y2="87" stroke="#6a8a6a" stroke-width=".5" opacity=".3"/>
+
+    <!-- Head -->
+    <ellipse cx="60" cy="38" rx="26" ry="24" fill="#4A4A4A"/>
+    <!-- Inner face area -->
+    <ellipse cx="60" cy="42" rx="20" ry="17" fill="#5a5a5a"/>
+
+    <!-- Ears -->
+    <path d="M38 25 Q32 4 46 16" fill="#4A4A4A"/>
+    <path d="M82 25 Q88 4 74 16" fill="#4A4A4A"/>
+    <path d="M40 23 Q35 8 47 17" fill="#f0a0a0" opacity=".2"/>
+    <path d="M80 23 Q85 8 73 17" fill="#f0a0a0" opacity=".2"/>
+
+    <!-- Eyes (droopy green — Ket's signature) -->
+    <ellipse cx="49" cy="39" rx="5.5" ry="5" fill="#A8E06C"/>
+    <ellipse cx="71" cy="39" rx="5.5" ry="5" fill="#A8E06C"/>
+    <ellipse cx="49" cy="39.5" rx="3.2" ry="3.8" fill="#2a2a2a"/>
+    <ellipse cx="71" cy="39.5" rx="3.2" ry="3.8" fill="#2a2a2a"/>
+    <circle cx="47.5" cy="38" r="1.3" fill="white" opacity=".8"/>
+    <circle cx="69.5" cy="38" r="1.3" fill="white" opacity=".8"/>
+
+    <!-- Heavy droopy eyelids (tired look) -->
+    <path d="M42 35 Q49 32 56 35" stroke="#4A4A4A" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    <path d="M64 35 Q71 32 78 35" stroke="#4A4A4A" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+
+    <!-- Nose -->
+    <ellipse cx="60" cy="46" rx="2.2" ry="1.5" fill="#3a3a3a"/>
+    <!-- Mouth (deadpan flat line) -->
+    <line x1="56" y1="50.5" x2="64" y2="50.5" stroke="#3a3a3a" stroke-width="1.5" stroke-linecap="round"/>
+
+    <!-- Whisker dots -->
+    <circle cx="42" cy="45" r=".7" fill="#3a3a3a" opacity=".2"/>
+    <circle cx="40" cy="47" r=".7" fill="#3a3a3a" opacity=".2"/>
+    <circle cx="78" cy="45" r=".7" fill="#3a3a3a" opacity=".2"/>
+    <circle cx="80" cy="47" r=".7" fill="#3a3a3a" opacity=".2"/>
+
+    <!-- Arms resting on counter surface -->
+    <path d="M36 88 Q26 95 22 104" stroke="#4A4A4A" stroke-width="10" stroke-linecap="round" fill="none"/>
+    <path d="M84 88 Q94 95 98 104" stroke="#4A4A4A" stroke-width="10" stroke-linecap="round" fill="none"/>
+    <!-- Paws on counter (resting flat) -->
+    <ellipse cx="20" cy="108" rx="8" ry="5" fill="#4A4A4A"/>
+    <ellipse cx="100" cy="108" rx="8" ry="5" fill="#4A4A4A"/>
+    <!-- Paw pads (subtle) -->
+    <ellipse cx="18" cy="109" rx="2" ry="1.2" fill="#5a5a5a" opacity=".3"/>
+    <ellipse cx="22" cy="109" rx="2" ry="1.2" fill="#5a5a5a" opacity=".3"/>
+    <ellipse cx="98" cy="109" rx="2" ry="1.2" fill="#5a5a5a" opacity=".3"/>
+    <ellipse cx="102" cy="109" rx="2" ry="1.2" fill="#5a5a5a" opacity=".3"/>
+  </svg>
+
+  <!-- Speech bubble -->
+  <div class="ml-dialogue">
+    <div class="ml-dialogue__text">...The town's a bit big for this screen.</div>
+    <div class="ml-dialogue__hint">
+      <svg class="ml-dialogue__arrow" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="14" y1="14" x2="6" y2="6"/><polyline points="6 12 6 6 12 6"/>
+      </svg>
+      Try the menu up there.
+    </div>
+  </div>
+
+  <!-- Counter items (links) -->
+  <div class="ml-counter">
+    <a href="https://shop.kehu.world" target="_blank" rel="noopener" class="ml-counter__item">
+      <div class="ml-counter__icon ml-counter__icon--shop">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#4A4A4A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      </div>
+      <span class="ml-counter__label">Shop</span>
+    </a>
+    <a href="https://www.webtoons.com/en/canvas/ketshop/list?title_no=1107623" target="_blank" rel="noopener" class="ml-counter__item">
+      <div class="ml-counter__icon ml-counter__icon--webtoon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#3D9970" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
+      </div>
+      <span class="ml-counter__label">Webtoon</span>
+    </a>
+    <a href="https://discord.com/invite/kehu" target="_blank" rel="noopener" class="ml-counter__item">
+      <div class="ml-counter__icon ml-counter__icon--discord">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#5865F2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/><path d="M15 12a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/><path d="M20 7.5C18.5 6.5 16.8 6 15.5 6L15 7C15 7 13.6 6.7 12 6.7C10.4 6.7 9 7 9 7L8.5 6C7.2 6 5.5 6.5 4 7.5C4 7.5 2 11 2 15.5C3.5 17.5 6 18 6 18L7 16.5C7 16.5 8.5 17 12 17C15.5 17 17 16.5 17 16.5L18 18C18 18 20.5 17.5 22 15.5C22 11 20 7.5 20 7.5Z"/></svg>
+      </div>
+      <span class="ml-counter__label">Discord</span>
+    </a>
+  </div>
+
+  <div class="ml-footer">Welcome to the shop. You're one of us.</div>
+</div>
+
 <!-- Tagline -->
-<div class="tagline">A quiet plushie shop. ...It's fine.</div>
+<div class="tagline">Welcome to the shop. You're one of us.</div>
 
 <script>
 /* ══════ SPACE INTRO ══════ */
@@ -1408,23 +1687,19 @@ const shushuSvg=shushuEl?.querySelector('svg');
 let shushuAngle=0;
 let shushuTumble=0;
 (function animateShushuOrbit(){
-  if(!shushuEl)return;
+  if(!shushuEl||introOpened)return; // stop after intro
   const W=window.innerWidth,H=window.innerHeight;
-  // Elliptical orbit covering most of the screen
   const cx=W*0.5, cy=H*0.45;
   const rx=W*0.38, ry=H*0.34;
   shushuAngle+=0.006;
-  // Tumble: continuous slow rotation with occasional faster spins
-  const spinCycle=shushuAngle%12.56; // ~2 full orbit loops
+  const spinCycle=shushuAngle%12.56;
   const spinBoost=spinCycle<2?2.5:spinCycle>8&&spinCycle<10?-1.8:0.6;
   shushuTumble+=spinBoost*0.8;
   const x=cx+Math.cos(shushuAngle)*rx + Math.sin(shushuAngle*0.7)*W*0.05;
   const y=cy+Math.sin(shushuAngle)*ry + Math.cos(shushuAngle*0.5)*H*0.04;
   const sc=1+Math.sin(shushuAngle*0.8)*0.06;
-  // Move the container (position)
-  shushuEl.style.transform=`translate(${x}px,${y}px)`;
-  // Tumble the SVG itself (full rotations)
-  shushuSvg.style.transform=`rotate(${shushuTumble}deg) scale(${sc})`;
+  shushuEl.style.transform=`translate3d(${x.toFixed(0)}px,${y.toFixed(0)}px,0)`;
+  shushuSvg.style.transform=`rotate(${shushuTumble.toFixed(0)}deg) scale(${sc.toFixed(3)})`;
   requestAnimationFrame(animateShushuOrbit);
 })();
 
@@ -1504,7 +1779,8 @@ const zoomMeteors=document.getElementById('zoomMeteors');
 const introEnter=document.getElementById('introEnter');
 const introSpaceLogo=document.querySelector('.intro-space-logo');
 
-/* ─── Space Swimmer element ─── */
+/* ─── Cached space elements (avoid querySelectorAll per frame) ─── */
+const spaceEls=[...document.querySelectorAll('.intro-nebula,.space-dust,.intro-shooting')];
 const swimmer=document.getElementById('spaceSwimmer');
 
 function applyZoomProgress(p){
@@ -1521,7 +1797,7 @@ function applyZoomProgress(p){
   // ── Fade all space elements during scroll zoom ──
   const spaceFade=Math.max(0,1-p/0.1);
   if(shushuEl)shushuEl.style.opacity=spaceFade;
-  document.querySelectorAll('.intro-nebula,.space-dust,.intro-shooting').forEach(el=>el.style.opacity=spaceFade);
+  spaceEls.forEach(el=>el.style.opacity=spaceFade);
 
   // ── Warp stars (gentle, accompanies swimmer journey) ──
   warpActive=p>0.02&&p<0.75;
@@ -1602,6 +1878,9 @@ function commitZoom(){
       header.classList.add('show');
       hotspotsInner.classList.add('show');
       tagline.classList.add('show');
+      // Show mobile landing if on phone
+      const ml=document.getElementById('mobileLanding');
+      if(ml&&window.innerWidth<=768) ml.classList.add('show');
       setTimeout(()=>{intro.style.display='none'},1200);
     }
   }
@@ -1673,103 +1952,83 @@ document.addEventListener('keydown',(e)=>{
   if(e.key==='Escape'&&menuOverlay.classList.contains('open'))toggleMenu();
 });
 
-/* ══════ WINDOW GLOW ANIMATION ══════ */
-(function animateGlow(){
-  const glows=document.querySelectorAll('.win-glow');
-  glows.forEach((g,i)=>{
-    const phase=i*1.2;
-    function tick(){
-      const t=Date.now()/1000;
-      const opacity=0.2+Math.sin(t*0.8+phase)*0.15;
-      g.setAttribute('opacity',opacity);
-      requestAnimationFrame(tick);
-    }
-    tick();
-  });
-})();
+/* ══════ TOWN ANIMATION ELEMENTS (cached once) ══════ */
+const glows=document.querySelectorAll('.win-glow');
+const glowPhases=Array.from(glows).map((_,i)=>i*1.2);
+const ketTail=document.querySelector('.ket-tail');
+const charTuni=document.getElementById('charTuni');
+const charShushu=document.getElementById('charShushu');
+const charDawg=document.getElementById('charDawg');
+const tuniBase=[680,530],ssBase=[920,505],dawgBase=[1075,545];
 
-/* ══════ KET TAIL SWAY ══════ */
-(function animateTail(){
-  const tail=document.querySelector('.ket-tail');
-  if(!tail)return;
-  function tick(){
-    const t=Date.now()/1000;
-    const angle=Math.sin(t*1.5)*10;
-    tail.setAttribute('transform',`rotate(${angle} 18 10)`);
-    requestAnimationFrame(tick);
-  }
-  tick();
-})();
-
-/* ══════ TUNI BOUNCE ══════ */
-(function animateTuni(){
-  const tuni=document.getElementById('charTuni');
-  if(!tuni)return;
-  const baseX=680,baseY=530;
-  function tick(){
-    const t=Date.now()/1000;
-    const y=Math.sin(t*2.5)*3;
-    const r=Math.sin(t*2)*2;
-    tuni.setAttribute('transform',`translate(${baseX},${baseY+y}) rotate(${r} 8 7)`);
-    requestAnimationFrame(tick);
-  }
-  tick();
-})();
-
-/* ══════ SHU SHU WOBBLE ══════ */
-(function animateShushu(){
-  const ss=document.getElementById('charShushu');
-  if(!ss)return;
-  const baseX=920,baseY=505;
-  function tick(){
-    const t=Date.now()/1000;
-    const y=Math.sin(t*2)*2;
-    const r=Math.sin(t*1.8)*3;
-    ss.setAttribute('transform',`translate(${baseX},${baseY+y}) rotate(${r} 8 6)`);
-    requestAnimationFrame(tick);
-  }
-  tick();
-})();
-
-/* ══════ DAWG PEEK ══════ */
-(function animateDawg(){
-  const dw=document.getElementById('charDawg');
-  if(!dw)return;
-  const baseX=1075,baseY=545;
-  function tick(){
-    const t=Date.now()/1000;
-    const x=Math.sin(t*0.5)*5+Math.sin(t*0.3)*3;
-    dw.setAttribute('transform',`translate(${baseX+x},${baseY})`);
-    requestAnimationFrame(tick);
-  }
-  tick();
-})();
-
-/* ══════ MOUSE CAMERA PAN on town ══════ */
+/* ══════ CAMERA PAN — Mouse + Touch with Momentum ══════ */
 const townWrap=document.querySelector('.town-wrap');
 let mx=0.5,my=0.5,camX=0.5,camY=0.5;
-document.addEventListener('mousemove',(e)=>{
-  mx=e.clientX/window.innerWidth;
-  my=e.clientY/window.innerHeight;
-});
-(function parallaxTick(){
-  camX+=(mx-camX)*0.03;
-  camY+=(my-camY)*0.03;
-  // Pan range: 15% of viewport per side (town is 130%, 15% overflow each edge)
-  const panX=window.innerWidth*0.15;
-  const panY=window.innerHeight*0.15;
-  const ox=(camX-0.5)*-panX*2;
-  const oy=(camY-0.5)*-panY*2;
-  if(townWrap) townWrap.style.transform=`translate(${ox}px,${oy}px)`;
-  requestAnimationFrame(parallaxTick);
-})();
+const isMobile='ontouchstart' in window;
 
-/* ══════ PARTICLES (floating motes) ══════ */
+/* Desktop: mouse-driven parallax */
+if(!isMobile){
+  document.addEventListener('mousemove',(e)=>{
+    mx=e.clientX/window.innerWidth;
+    my=e.clientY/window.innerHeight;
+  });
+}
+
+/* Mobile: touch-drag panning with inertia */
+let touchDragging=false;
+let touchLastX=0,touchLastY=0;
+let touchVelX=0,touchVelY=0;
+let touchMoved=false;
+const PAN_LIMIT=0.15;
+
+if(isMobile && townWrap){
+  const world=document.getElementById('world');
+  world.addEventListener('touchstart',(e)=>{
+    if(e.target.closest('.hotspot')||e.target.closest('.header'))return;
+    touchDragging=true;
+    touchMoved=false;
+    touchLastX=e.touches[0].clientX;
+    touchLastY=e.touches[0].clientY;
+    // Kill any existing momentum
+    touchVelX=0;touchVelY=0;
+  },{passive:true});
+
+  world.addEventListener('touchmove',(e)=>{
+    if(!touchDragging)return;
+    const tx=e.touches[0].clientX,ty=e.touches[0].clientY;
+    const dx=tx-touchLastX,dy=ty-touchLastY;
+    touchMoved=touchMoved||(Math.abs(dx)+Math.abs(dy)>5);
+
+    // Direct 1:1 movement — map follows finger exactly
+    const moveX=-dx/window.innerWidth*2.2;
+    const moveY=-dy/window.innerHeight*2.2;
+    mx=Math.max(0,Math.min(1,mx+moveX));
+    my=Math.max(0,Math.min(1,my+moveY));
+    // Also move camX/camY directly (skip lerp during drag)
+    camX=mx;
+    camY=my;
+
+    // Track velocity for momentum on release
+    touchVelX=moveX;
+    touchVelY=moveY;
+    touchLastX=tx;touchLastY=ty;
+    if(touchMoved)e.preventDefault();
+  },{passive:false});
+
+  world.addEventListener('touchend',()=>{
+    touchDragging=false;
+  },{passive:true});
+}
+
+/* ══════ PARTICLES (floating motes — no shadowBlur) ══════ */
 const canvas=document.getElementById('particles');
 const ctx=canvas.getContext('2d');
 let motes=[];
 function resizeC(){canvas.width=window.innerWidth;canvas.height=window.innerHeight}
 resizeC();window.addEventListener('resize',resizeC);
+
+const MOTE_COUNT=isMobile?12:25;
+const PAL=['#FFD700','#FFA040','#FEFCF8','#A8E06C','#f0f0e8'];
 
 class Mote{
   constructor(){this.reset(true)}
@@ -1783,8 +2042,7 @@ class Mote{
     this.wobbleS=Math.random()*.012+.004;
     this.opacity=Math.random()*.3+.08;
     this.growing=Math.random()>.5;
-    const pal=['#FFD700','#FFA040','#FEFCF8','#A8E06C','#f0f0e8'];
-    this.color=pal[Math.floor(Math.random()*pal.length)];
+    this.color=PAL[Math.floor(Math.random()*PAL.length)];
   }
   update(){
     this.wobbleP+=this.wobbleS;
@@ -1794,23 +2052,78 @@ class Mote{
     else{this.opacity-=.001;if(this.opacity<.06)this.growing=true}
     if(this.y<-10||this.x<-10||this.x>canvas.width+10)this.reset(false);
   }
-  draw(){
-    ctx.save();ctx.globalAlpha=this.opacity;ctx.fillStyle=this.color;
-    ctx.shadowColor=this.color;ctx.shadowBlur=this.size*3;
-    ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);ctx.fill();ctx.restore();
-  }
 }
-for(let i=0;i<30;i++)motes.push(new Mote());
-(function drawMotes(){
+for(let i=0;i<MOTE_COUNT;i++)motes.push(new Mote());
+
+/* ══════ SINGLE UNIFIED GAME LOOP ══════ */
+(function gameLoop(){
+  const t=Date.now()/1000;
+
+  /* ── Town character animations (only after intro) ── */
+  if(introOpened){
+    // Window glow (batch setAttribute)
+    for(let i=0;i<glows.length;i++){
+      glows[i].setAttribute('opacity',(0.2+Math.sin(t*0.8+glowPhases[i])*0.15).toFixed(3));
+    }
+    // Ket tail sway
+    if(ketTail) ketTail.setAttribute('transform',`rotate(${(Math.sin(t*1.5)*10).toFixed(1)} 18 10)`);
+    // Tuni bounce
+    if(charTuni) charTuni.setAttribute('transform',`translate(${tuniBase[0]},${(tuniBase[1]+Math.sin(t*2.5)*3).toFixed(1)}) rotate(${(Math.sin(t*2)*2).toFixed(1)} 8 7)`);
+    // Shu Shu wobble
+    if(charShushu) charShushu.setAttribute('transform',`translate(${ssBase[0]},${(ssBase[1]+Math.sin(t*2)*2).toFixed(1)}) rotate(${(Math.sin(t*1.8)*3).toFixed(1)} 8 6)`);
+    // Dawg peek
+    if(charDawg) charDawg.setAttribute('transform',`translate(${(dawgBase[0]+Math.sin(t*0.5)*5+Math.sin(t*0.3)*3).toFixed(1)},${dawgBase[1]})`);
+  }
+
+  /* ── Camera pan (mouse or touch with inertia) ── */
+  if(isMobile){
+    if(touchDragging){
+      // During drag: camX/camY already set directly in touchmove
+    } else {
+      // After release: apply momentum with friction
+      if(Math.abs(touchVelX)>0.0002||Math.abs(touchVelY)>0.0002){
+        mx=Math.max(0,Math.min(1,mx+touchVelX));
+        my=Math.max(0,Math.min(1,my+touchVelY));
+        touchVelX*=0.95;
+        touchVelY*=0.95;
+      }
+      // Gentle lerp only for momentum settling
+      camX+=(mx-camX)*0.12;
+      camY+=(my-camY)*0.12;
+    }
+  } else {
+    // Desktop: smooth mouse-follow lerp
+    camX+=(mx-camX)*0.06;
+    camY+=(my-camY)*0.06;
+  }
+  const panX=window.innerWidth*PAN_LIMIT;
+  const panY=window.innerHeight*PAN_LIMIT;
+  const ox=(camX-0.5)*-panX*2;
+  const oy=(camY-0.5)*-panY*2;
+  if(townWrap) townWrap.style.transform=`translate3d(${ox.toFixed(1)}px,${oy.toFixed(1)}px,0)`;
+
+  /* ── Particles (no shadowBlur — draw two passes for glow effect) ── */
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  motes.forEach(m=>{m.update();m.draw()});
-  requestAnimationFrame(drawMotes);
+  // Pass 1: soft glow circles (larger, very transparent)
+  for(let i=0;i<motes.length;i++){
+    const m=motes[i];m.update();
+    ctx.globalAlpha=m.opacity*0.3;
+    ctx.fillStyle=m.color;
+    ctx.beginPath();ctx.arc(m.x,m.y,m.size*3,0,Math.PI*2);ctx.fill();
+  }
+  // Pass 2: bright cores
+  for(let i=0;i<motes.length;i++){
+    const m=motes[i];
+    ctx.globalAlpha=m.opacity;
+    ctx.fillStyle=m.color;
+    ctx.beginPath();ctx.arc(m.x,m.y,m.size,0,Math.PI*2);ctx.fill();
+  }
+  ctx.globalAlpha=1;
+
+  requestAnimationFrame(gameLoop);
 })();
 
 /* ══════ HOTSPOT CLICKS ══════ */
-document.querySelectorAll('.hotspot').forEach(h=>{
-  h.addEventListener('click',e=>e.preventDefault());
-});
 
 /* ══════ TOUCH: tap to reveal ══════ */
 if('ontouchstart' in window){
