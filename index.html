@@ -485,6 +485,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#5a9a5a;font-family:
 .menu-overlay.open .menu-link:nth-child(2){transition-delay:.24s}
 .menu-overlay.open .menu-link:nth-child(3){transition-delay:.30s}
 .menu-overlay.open .menu-link:nth-child(4){transition-delay:.36s}
+.menu-overlay.open .menu-link:nth-child(5){transition-delay:.42s}
 
 /* Character-colored dot before each link */
 .menu-link::before{
@@ -494,10 +495,11 @@ html,body{width:100%;height:100%;overflow:hidden;background:#5a9a5a;font-family:
   box-shadow:0 0 0 2px rgba(0,0,0,0.04);
   transition:transform .3s cubic-bezier(0.34,1.56,0.64,1);
 }
-.menu-link:nth-child(1){--dot:#A8E06C} /* Ket green */
-.menu-link:nth-child(2){--dot:#E8B4B8} /* Tuni pink */
-.menu-link:nth-child(3){--dot:#f5d040} /* Shu Shu yellow */
-.menu-link:nth-child(4){--dot:#7cc4e0} /* Water blue */
+.menu-link:nth-child(1){--dot:#A8E06C} /* Ket green — Home */
+.menu-link:nth-child(2){--dot:#E8B4B8} /* Tuni pink — Characters */
+.menu-link:nth-child(3){--dot:#f5d040} /* Shu Shu yellow — Shop */
+.menu-link:nth-child(4){--dot:#7cc4e0} /* Water blue — Webtoon */
+.menu-link:nth-child(5){--dot:#8b7b6b} /* Dawg brown — About */
 
 .menu-link:hover{background:color-mix(in srgb, var(--dot) 10%, transparent);transform:translateX(4px)}
 .menu-link:hover::before{transform:scale(1.5);box-shadow:0 0 0 3px color-mix(in srgb, var(--dot) 18%, transparent)}
@@ -1014,6 +1016,10 @@ html{position:fixed;width:100%}
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         Home
       </a>
+      <a href="characters/" class="menu-link" data-hover>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Characters
+      </a>
       <a href="https://shop.kehu.world" target="_blank" rel="noopener" class="menu-link" data-hover>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
         Shop
@@ -1507,7 +1513,7 @@ html{position:fixed;width:100%}
           <div class="hs-ring"><div class="hs-pulse"></div></div>
           <span class="hs-label">Webtoon</span>
         </a>
-        <a href="#" class="hotspot hs-characters" data-hover>
+        <a href="characters/" class="hotspot hs-characters" data-hover>
           <div class="hs-ring"><div class="hs-pulse"></div></div>
           <span class="hs-label">Characters</span>
         </a>
